@@ -1,0 +1,1858 @@
+﻿<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings — Knomee</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary-100: #240446;
+      --primary-70:  #7639A1;
+      --primary-10:  #e9d9f4;
+      --accent-100:  #ea0000;
+      --neutral-100: #000000;
+      --neutral-90:  #757575;
+      --neutral-20:  #e2e2e2;
+      --border:      #e8e8e8;
+      --bg-page:     #f4fdfb;
+      --bg-sidebar:  #f6f6f6;
+      --bg-white:    #ffffff;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg-page);
+      min-height: 100vh;
+      color: var(--neutral-100);
+    }
+
+    /* ── Navbar ── */
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 60px;
+      background: var(--primary-100);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 100;
+    }
+    .navbar-logo {
+      display: flex;
+      align-items: flex-end;
+      gap: 12px;
+    }
+    .navbar-logo svg {
+      height: 24px;
+      width: auto;
+      display: block;
+      flex-shrink: 0;
+    }
+    .navbar-logo-advisor {
+      font-size: 18.5px;
+      font-weight: 700;
+      color: white;
+      letter-spacing: -0.18px;
+      text-transform: uppercase;
+      line-height: 1;
+      margin-bottom: 1px;
+    }
+    .navbar-burger {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 8px;
+      flex-shrink: 0;
+      transition: background 0.15s;
+    }
+    .navbar-burger:hover { background: rgba(255,255,255,0.12); }
+
+    /* ── Shell ── */
+    .shell {
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      align-items: stretch;
+      padding: 84px 24px 24px 24px;
+    }
+
+    /* ── Card wrapper (gray + white as one unit) ── */
+    .card {
+      display: flex;
+      width: 100%;
+      max-width: 1100px;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 4px 32px 0 rgba(0,0,0,0.12);
+      align-items: stretch;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 280px;
+      flex-shrink: 0;
+      background: var(--bg-sidebar);
+      padding: 32px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+    .sidebar-heading { }
+    .sidebar-heading h1 {
+      font-size: 32px;
+      font-weight: 600;
+      line-height: 1.3;
+      letter-spacing: -0.32px;
+    }
+    .sidebar-heading p {
+      font-size: 16px;
+      font-weight: 400;
+      color: var(--neutral-100);
+      line-height: 1.5;
+      margin-top: 4px;
+    }
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.5;
+      color: var(--neutral-100);
+      transition: background 0.15s;
+      border: none;
+      background: transparent;
+      text-align: left;
+      width: 100%;
+    }
+    .nav-item:hover { background: #e8e8e8; }
+    .nav-item.active {
+      background: var(--neutral-20);
+      font-weight: 600;
+    }
+    .nav-icon {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--neutral-100);
+    }
+
+    /* ── Main content ── */
+    .main {
+      flex: 1;
+      background: white;
+      padding: 38px 48px;
+    }
+    .main-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .main-header h2 {
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.5;
+      letter-spacing: -0.24px;
+    }
+
+    /* ── Tab panels ── */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: flex; flex-direction: column; gap: 36px; }
+    .tab-panel.active .main-header { margin-bottom: 0; }
+
+    /* ── Form elements ── */
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .field-group > label:first-child {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--primary-70);
+      line-height: 1.5;
+    }
+    .field-group input[type="text"],
+    .field-group input[type="url"],
+    .field-group textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--neutral-100);
+      background: white;
+      outline: none;
+      transition: border-color 0.15s;
+      resize: vertical;
+    }
+    .field-group input[type="text"]:focus,
+    .field-group input[type="url"]:focus,
+    .field-group textarea:focus {
+      border-color: var(--primary-70);
+    }
+    .field-group input[readonly] {
+      background: #f5f5f6;
+      color: var(--neutral-90);
+      cursor: default;
+    }
+    .field-hint {
+      font-size: 12px;
+      color: var(--neutral-90);
+      line-height: 1.5;
+    }
+
+    /* ── Section label ── */
+    .section-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--primary-70);
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    /* ── UTM checkboxes ── */
+    .checkbox-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px 24px;
+      margin-bottom: 20px;
+    }
+    .checkbox-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 400;
+      cursor: pointer;
+    }
+    .checkbox-item input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--primary-70);
+      cursor: pointer;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .utm-label {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+    .utm-desc {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--neutral-100);
+      line-height: 1.4;
+    }
+    .utm-key {
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--neutral-90);
+      font-family: 'Courier New', monospace;
+      line-height: 1.3;
+      letter-spacing: 0.01em;
+    }
+    .custom-key-group {
+      display: flex;
+      gap: 8px;
+      align-items: stretch;
+    }
+    .custom-key-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+    }
+    .custom-key-fields input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      color: var(--neutral-100);
+      background: white;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .custom-key-fields input:last-child {
+      font-family: 'Courier New', monospace;
+    }
+    .custom-key-fields input:focus { border-color: var(--primary-70); }
+    .custom-key-fields input::placeholder { font-family: 'Poppins', sans-serif; }
+    #custom-key::placeholder { font-family: 'Courier New', monospace; }
+    .btn-add {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 20px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      color: var(--neutral-100);
+      transition: border-color 0.15s, background 0.15s;
+      white-space: nowrap;
+    }
+    .btn-add:hover { border-color: var(--primary-70); background: var(--primary-10); }
+
+    /* ── Advisors box ── */
+    .advisors-box {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 24px;
+    }
+
+    /* ── Color pickers ── */
+    .color-row {
+      display: flex;
+      gap: 32px;
+    }
+    .color-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .color-field label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--primary-70);
+    }
+
+    /* ── Font fields (side by side, like color row) ── */
+    .font-row {
+      display: flex;
+      gap: 32px;
+    }
+    .font-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .font-field label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--primary-70);
+    }
+    .font-field { position: relative; }
+    .font-field input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--neutral-100);
+      background: white;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .font-field input:focus { border-color: var(--primary-70); }
+    .font-field input {
+      background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 6L8 10L12 6' stroke='%23757575' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      padding-right: 32px;
+      cursor: pointer;
+    }
+    .color-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      width: 100%;
+      background: white;
+    }
+    .color-input-wrap:focus-within { border-color: var(--primary-70); }
+    .color-swatch {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      flex-shrink: 0;
+      overflow: hidden;
+      position: relative;
+    }
+    .color-swatch input[type="color"] {
+      position: absolute;
+      opacity: 0;
+      width: 200%;
+      height: 200%;
+      top: -50%;
+      left: -50%;
+      cursor: pointer;
+    }
+    .hex-input-wrap {
+      display: flex;
+      align-items: center;
+      flex: 1;
+    }
+    .hex-prefix {
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      color: #9ca3af;
+      user-select: none;
+      padding-right: 1px;
+    }
+    .color-hex {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      color: var(--neutral-100);
+    }
+
+    /* ── Save button ── */
+    .btn-save {
+      align-self: flex-end;
+      padding: 12px 28px;
+      background: var(--primary-100);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-save:hover { background: var(--primary-70); }
+
+    /* ── Custom font dropdown ── */
+    .custom-dropdown {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      width: 200px;
+      max-height: 220px;
+      overflow-y: auto;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      z-index: 300;
+      display: none;
+    }
+    .custom-dropdown.open { display: block; }
+    .custom-dropdown-item {
+      padding: 8px 14px;
+      font-size: 13px;
+      cursor: pointer;
+      color: var(--neutral-100);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .custom-dropdown-item:hover { background: var(--primary-10); color: var(--primary-70); }
+    .custom-dropdown-empty {
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--neutral-90);
+    }
+
+    /* ── Save toast ── */
+    .save-toast {
+      position: fixed;
+      top: 20px;
+      right: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: white;
+      border-radius: 100px;
+      padding: 12px 20px 12px 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+      z-index: 1000;
+      opacity: 0;
+      transform: translateY(-12px);
+      pointer-events: none;
+      transition: opacity 0.22s ease, transform 0.22s ease;
+    }
+    .save-toast.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    .save-toast-icon {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: #4caf50;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .save-toast-text {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--neutral-100);
+      white-space: nowrap;
+    }
+
+    /* ── Version blocks (Site Customization) ── */
+    /* ── Site Customization stacked layout ── */
+    .customization-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .version-editor-tabs {
+      display: flex;
+      gap: 4px;
+      border-bottom: 1.5px solid var(--border);
+    }
+    .version-editor-tab {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border: none;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -1.5px;
+      background: transparent;
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #9ca3af;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .version-editor-tab:hover { color: var(--primary-70); }
+    .version-editor-tab.active {
+      color: var(--primary-100);
+      border-bottom-color: var(--primary-100);
+    }
+    .version-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .char-count {
+      display: block;
+      font-size: 11px;
+      color: var(--text-muted, #9ca3af);
+      text-align: right;
+      margin-top: 4px;
+    }
+    .char-count.warn { color: #f59e0b; }
+    .char-count.over { color: #ef4444; }
+    .version-block {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+    .version-block-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .version-badge {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      line-height: 1.5;
+    }
+    .version-badge-a { background: var(--primary-100); color: white; }
+    .version-badge-b { background: var(--primary-10); color: var(--primary-70); }
+    .version-default-tag {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--neutral-90);
+      background: #f0f0f0;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+
+    /* ── Landing page preview ── */
+    .preview-wrapper {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .preview-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--border);
+      background: #fafafa;
+    }
+    .preview-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--primary-70);
+    }
+    .preview-version-btns { display: flex; gap: 4px; }
+    .preview-version-btn {
+      padding: 4px 14px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      font-family: 'Poppins', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      background: white;
+      color: var(--neutral-90);
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .preview-version-btn.active {
+      background: var(--primary-100);
+      color: white;
+      border-color: var(--primary-100);
+    }
+    .preview-scale-outer {
+      overflow: hidden;
+      /* tallest the preview should ever be; shrinks on shorter screens */
+      height: min(520px, calc(100vh - 442px));
+      position: relative;
+      background: white;
+      border-radius: 0 0 8px 8px;
+    }
+    .lp-preview {
+      width: 800px;
+      /* scale is set dynamically by fitPreview() so the whole page fits */
+      transform: scale(0.93);
+      transform-origin: top left;
+      position: absolute;
+      top: 0; left: 0;
+      font-family: 'Poppins', sans-serif;
+      background: white;
+      pointer-events: none;
+      user-select: none;
+    }
+    /* editable fields inside the preview */
+    #preview-header, #preview-subtext {
+      pointer-events: auto;
+      user-select: text;
+      cursor: text;
+      outline: 1.5px dashed rgba(118,57,161,0.45);
+      outline-offset: 4px;
+      border-radius: 4px;
+      transition: background 0.15s, outline-color 0.15s;
+    }
+    /* pencil icon signalling editability; hidden while editing */
+    #preview-header::after, #preview-subtext::after {
+      content: '';
+      display: inline-block;
+      width: 13px;
+      height: 13px;
+      margin-left: 8px;
+      vertical-align: baseline;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M11.3 1.7a1.7 1.7 0 0 1 2.4 2.4l-8.5 8.5-3.2.8.8-3.2 8.5-8.5z' stroke='%237639A1' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center / contain;
+      opacity: 0.65;
+    }
+    #preview-header:hover, #preview-subtext:hover {
+      background: rgba(36,4,70,0.05);
+      outline-color: rgba(118,57,161,0.8);
+    }
+    #preview-header:focus, #preview-subtext:focus {
+      background: rgba(36,4,70,0.04);
+      outline: 2px solid rgba(118,57,161,0.65);
+      outline-offset: 4px;
+    }
+    #preview-header:focus::after, #preview-subtext:focus::after {
+      display: none;
+    }
+    /* char counter inside the scaled page, below the active field's right edge */
+    .preview-char-badge {
+      position: absolute;
+      color: #9ca3af;
+      font-family: 'Poppins', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.18s;
+      white-space: nowrap;
+      z-index: 10;
+    }
+    .preview-char-badge.visible { opacity: 1; }
+    .preview-char-badge.warn { color: #f59e0b; }
+    .preview-char-badge.over { color: #ef4444; }
+
+    /* ── Landing page mockup elements ── */
+    .lp-preview {
+      --lp-primary: #240446;
+      --lp-accent:  #7639A1;
+    }
+    .lp-nav {
+      background: var(--lp-primary);
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 0 24px;
+    }
+    .lp-nav-knomee {
+      position: absolute;
+      left: 24px;
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+    }
+    .lp-nav-knomee svg {
+      height: 16px;
+      width: auto;
+      display: block;
+    }
+    .lp-nav-knomee-advisor {
+      font-size: 12px;
+      font-weight: 700;
+      color: white;
+      letter-spacing: -0.12px;
+      text-transform: uppercase;
+      line-height: 1;
+      margin-bottom: 1px;
+    }
+    .lp-nav-org {
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      font-size: 18.5px; font-weight: 700;
+      letter-spacing: -0.18px;
+      line-height: 1;
+      margin-bottom: 1px;
+    }
+    .lp-nav-org .org-reg {
+      font-size: 10px;
+      vertical-align: super;
+      margin-left: 1px;
+      font-weight: 400;
+    }
+    /* Registered Trademark setting (Branding tab) */
+    .trademark-hint {
+      font-size: 13px;
+      color: #9ca3af;
+      line-height: 1.5;
+      margin: 4px 0 0 24px; /* 16px checkbox + 8px gap = aligns with label text */
+    }
+    .lp-body {
+      padding: 48px 60px 40px;
+      text-align: center;
+    }
+    .lp-welcome {
+      font-size: 32px; font-weight: 700;
+      color: var(--lp-primary); line-height: 1.25;
+    }
+    .lp-header {
+      font-size: 32px; font-weight: 700;
+      color: var(--lp-primary); line-height: 1.25;
+      margin-bottom: 18px;
+    }
+    .lp-subtext {
+      font-size: 16px; font-weight: 400;
+      color: #9ca3af; line-height: 1.6;
+      max-width: 520px; margin: 0 auto 36px;
+    }
+    .lp-cards-label {
+      font-size: 15px; font-weight: 600;
+      color: #111; text-align: left;
+      margin-bottom: 14px;
+    }
+    .lp-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 36px;
+    }
+    .lp-card {
+      background: #F7F7FB;
+      border: none;
+      border-radius: 12px;
+      padding: 20px 18px 24px;
+      min-height: 140px;
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+    }
+    .lp-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 4px;
+      background: var(--lp-accent);
+      border-radius: 0 0 12px 12px;
+    }
+    .lp-card-icon { font-size: 28px; margin-bottom: 14px; display: block; }
+    .lp-card-title { font-size: 14px; font-weight: 700; color: #1a1a2e; margin-bottom: 8px; line-height: 1.4; }
+    .lp-card-desc { font-size: 11px; color: #555; line-height: 1.5; }
+    .lp-cta {
+      display: inline-block;
+      background: var(--lp-primary);
+      color: white;
+      font-family: 'Poppins', sans-serif;
+      font-size: 15px; font-weight: 700;
+      padding: 16px 48px;
+      border-radius: 40px;
+      border: none;
+      margin-bottom: 12px;
+      cursor: default;
+    }
+    .lp-est {
+      font-size: 12px; color: #9ca3af;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+
+    /* ── Logo upload ── */
+    .logo-upload-wrap {
+      position: relative;
+      display: flex; align-items: center; gap: 14px;
+      height: 44px;
+      border: 1.5px dashed var(--border); border-radius: 8px;
+      padding: 0 18px; cursor: pointer; background: #fafafa;
+      transition: border-color 0.15s, background 0.15s;
+      width: 100%;
+    }
+    .logo-upload-wrap:hover { border-color: var(--primary-70); background: var(--primary-10); }
+    .logo-placeholder { display: flex; align-items: center; gap: 8px; color: var(--neutral-90); font-size: 13px; font-weight: 500; }
+    .logo-placeholder svg { flex-shrink: 0; }
+    #logo-preview-img { max-height: 48px; max-width: 180px; object-fit: contain; }
+  </style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&amp;display=swap"></head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-logo">
+      <svg width="1702" height="288" viewBox="0 0 1702 288" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M165.378 198.685C164.99 198.685 164.537 198.685 164.149 198.62C110.711 192.518 93.0496 170.8 87.2917 158.466C78.8167 140.224 83.2159 121.394 98.5487 110.372C112.523 100.333 130.766 101.12 141.895 112.274C146.229 116.605 146.294 123.757 142.024 128.152C137.753 132.548 130.703 132.614 126.367 128.283C122.356 124.281 115.757 125.462 111.358 128.677C108.318 130.843 101.913 137.206 107.347 148.886C110.258 155.119 121.063 169.62 159.815 175.393C180.064 141.34 175.859 123.691 173.012 117.458C170.619 112.34 167.319 109.125 163.179 107.813C159.298 106.632 154.704 107.222 150.951 109.453C145.711 112.602 138.918 110.831 135.813 105.516C132.707 100.202 134.455 93.3125 139.695 90.1632C148.817 84.6517 159.815 83.2739 169.648 86.3577C176.764 88.5885 186.598 94.0998 193.003 107.878C198.761 120.279 204.066 147.836 174.695 193.567C172.624 196.783 169.13 198.685 165.443 198.685H165.378Z" fill="white"></path>
+        <path d="M182.923 284.948C177.554 284.948 172.572 281.405 170.89 275.893C168.884 269.136 172.636 261.984 179.235 259.95C221.093 246.959 252.6 211.922 261.398 168.487C267.803 136.796 261.656 104.515 244.124 77.5489C226.592 50.5825 199.744 32.1456 168.496 25.5844C161.703 24.1409 157.304 17.383 158.727 10.4937C160.151 3.60443 166.75 -0.85719 173.607 0.586272C211.389 8.45969 243.93 30.8333 265.15 63.508C286.37 96.1828 293.81 135.288 286.046 173.67C275.372 226.291 237.266 268.742 186.611 284.423C185.382 284.816 184.152 285.014 182.923 285.014V284.948Z" fill="white"></path>
+        <path d="M117.96 288C117.119 288 116.278 287.934 115.437 287.737C77.6551 279.864 45.1137 257.556 23.8938 224.815C2.67386 192.142 -4.76604 153.036 2.99733 114.653C14.7718 56.39 59.6054 11.446 117.184 0.226364C124.041 -1.08587 130.64 3.4413 131.935 10.3305C133.228 17.2854 128.764 23.9778 121.971 25.2901C74.4204 34.6069 37.415 71.6777 27.6461 119.837C21.2413 151.528 27.3872 183.809 44.9196 210.775C62.4518 237.742 89.3002 256.178 120.547 262.739C127.341 264.182 131.741 270.941 130.317 277.83C129.088 283.866 123.847 288 118.025 288H117.96Z" fill="white"></path>
+        <path d="M58.8323 136.393C57.9266 136.393 57.0208 136.262 56.1152 136.066C49.5809 134.556 45.5052 127.93 47.0578 121.303C53.0745 94.861 68.86 72.4218 91.5679 58.0527C114.211 43.6838 141.059 39.1566 167.132 45.2584C202.843 53.6568 231.179 81.0825 241.013 116.972C242.824 123.534 239.072 130.291 232.602 132.128C226.134 133.966 219.47 130.094 217.658 123.599C210.218 96.4357 188.74 75.6367 161.632 69.2724C141.901 64.614 121.586 68.0914 104.378 78.983C87.2334 89.8746 75.2648 106.868 70.6715 126.88C69.3775 132.588 64.3961 136.393 58.8323 136.393Z" fill="white"></path>
+        <path d="M144.457 245.68C137.018 245.68 129.448 244.828 121.944 243.055C82.3504 233.804 52.4614 201.523 45.7331 160.909C44.6333 154.217 49.0973 147.853 55.6961 146.737C62.295 145.622 68.5704 150.149 69.6702 156.841C74.7811 187.614 97.4243 212.021 127.378 219.042C168.136 228.556 208.893 202.704 218.339 161.435C219.826 154.807 226.361 150.674 232.895 152.249C239.429 153.758 243.505 160.385 241.953 167.011C231.278 213.858 190.003 245.68 144.457 245.68Z" fill="white"></path>
+        <path d="M436.702 188.382H420.788V259.505H378.607V12.0173H420.788V155.38H441.167L488.2 94.0321H536.267L472.349 172.897L543.191 259.44H491.693L436.767 188.316L436.702 188.382Z" fill="white"></path>
+        <path d="M720.165 152.598V254.231H677.984V158.57C677.984 137.18 666.921 123.14 646.219 123.14C619.241 123.14 607.143 147.678 607.143 168.346V254.231H564.962V88.824L597.439 87.4462C600.544 98.9939 602.615 116.184 602.615 123.533H603.65C611.93 103.587 628.557 86.7245 658.252 86.7245C698.362 86.7245 720.101 114.413 720.101 152.598H720.165Z" fill="white"></path>
+        <path d="M921.586 171.888C921.586 221.688 887.75 256.331 836.252 256.331C784.756 256.331 750.92 221.622 750.92 171.888C750.92 122.154 785.144 86.7245 836.252 86.7245C887.362 86.7245 921.586 122.154 921.586 171.888ZM878.758 171.888C878.758 142.428 862.196 121.761 836.252 121.761C810.31 121.761 793.748 142.428 793.748 171.888C793.748 201.348 810.31 221.295 836.252 221.295C862.196 200.955 878.758 171.888Z" fill="white"></path>
+        <path d="M1217.1 153.402V254.378H1174.92V159.044C1174.92 137.654 1164.18 124.007 1143.48 124.007C1117.92 124.007 1106.47 148.218 1106.47 168.492V254.378H1064.29V159.044C1064.29 137.654 1053.55 124.007 1032.85 124.007C1007.3 124.007 996.232 148.218 996.232 168.492V254.378H954.052V88.9705L986.529 87.5926C989.634 98.4842 991.704 116.331 991.704 123.679H992.028C999.986 103.34 1016.22 87.199 1044.88 87.199C1073.54 87.199 1093.6 101.896 1101.88 125.057C1109.51 103.996 1126.08 87.199 1155.45 87.199C1194.85 87.199 1216.97 114.887 1216.97 153.467L1217.1 153.402Z" fill="white"></path>
+        <path d="M1382.9 203.382L1404.32 226.871C1391.89 243.34 1368.02 256.331 1335.22 256.331C1280.94 256.331 1248.14 221.622 1248.14 171.888C1248.14 122.154 1280.62 86.7245 1330.76 86.7245C1380.9 86.7245 1405.74 119.99 1405.74 164.54C1405.74 175.038 1403.99 181.731 1403.99 181.731H1290.64C1294.47 206.27 1311.02 223.066 1339.75 223.066C1363.24 223.066 1376.04 211.846 1382.96 203.448L1382.9 203.382ZM1290.64 157.454H1366.02C1365.7 135.736 1352.17 119.924 1330.76 119.924C1309.34 119.924 1294.47 134.294 1290.64 157.454Z" fill="white"></path>
+        <path d="M1564.72 203.382L1586.13 226.871C1573.71 243.34 1549.84 256.331 1517.03 256.331C1462.76 256.331 1429.96 221.622 1429.96 171.888C1429.96 122.154 1462.44 86.7245 1512.57 86.7245C1562.72 86.7245 1587.55 119.99 1587.55 164.54C1587.55 175.038 1585.81 181.731 1585.81 181.731H1472.46C1476.28 206.27 1492.85 223.066 1521.56 223.066C1545.05 223.066 1557.86 211.846 1564.79 203.448L1564.72 203.382ZM1472.46 157.454H1547.83C1547.51 135.736 1533.99 119.924 1512.57 119.924C1491.15 119.924 1476.28 134.294 1472.46 157.454Z" fill="white"></path>
+        <path d="M1660.46 86.9999L1650.6 69.5919H1646.38V86.9999H1637.42V42.3279H1654.18C1657.64 42.3279 1660.58 42.9465 1663.02 44.1839C1665.45 45.3785 1667.26 47.0212 1668.46 49.1119C1669.69 51.1599 1670.31 53.4639 1670.31 56.0239C1670.31 58.9679 1669.46 61.6345 1667.75 64.0239C1666.05 66.3705 1663.51 67.9919 1660.14 68.8879L1670.82 86.9999H1660.46ZM1646.38 62.8719H1653.86C1656.3 62.8719 1658.11 62.2959 1659.3 61.1439C1660.5 59.9492 1661.1 58.3065 1661.1 56.2159C1661.1 54.1679 1660.5 52.5892 1659.3 51.4799C1658.11 50.3279 1656.3 49.7519 1653.86 49.7519H1646.38V62.8719Z" fill="white"></path>
+        <path d="M1694 65C1694 42.9086 1676.09 25 1654 25C1631.91 25 1614 42.9086 1614 65C1614 87.0914 1631.91 105 1654 105C1676.09 105 1694 87.0914 1694 65ZM1702 65C1702 91.5097 1680.51 113 1654 113C1627.49 113 1606 91.5097 1606 65C1606 38.4903 1627.49 17 1654 17C1680.51 17 1702 38.4903 1702 65Z" fill="white"></path>
+      </svg>
+      <span class="navbar-logo-advisor">Advisor</span>
+    </div>
+    <div class="navbar-burger">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="3" y="5" width="18" height="2" rx="1" fill="white"/>
+        <rect x="3" y="11" width="18" height="2" rx="1" fill="white"/>
+        <rect x="3" y="17" width="18" height="2" rx="1" fill="white"/>
+      </svg>
+    </div>
+  </nav>
+
+  <div class="shell">
+    <div class="card">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-heading">
+        <h1>Settings</h1>
+        <p>Manage your settings.</p>
+      </div>
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-tab="access" onclick="switchTab('access')">
+          <span class="nav-icon">
+            <!-- Person/user icon -->
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="9" cy="6" r="3.5" fill="currentColor"/>
+              <path fill="currentColor" d="M2 15.5C2 12.46 5.13 10 9 10s7 2.46 7 5.5H2Z"/>
+            </svg>
+          </span>
+          Advisory Team Access
+        </button>
+        <button class="nav-item" data-tab="general" onclick="switchTab('general')">
+          <span class="nav-icon">
+            <!-- Solid gear: 6-tooth star polygon + transparent center hole (evenodd) -->
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" clip-rule="evenodd" fill="currentColor" d="M17 9L14.2 12L13 15.93L9 15L5 15.93L3.8 12L1 9L3.8 6L5 2.07L9 3L13 2.07L14.2 6Z
+                   M6 9A3 3 0 1 0 12 9A3 3 0 1 0 6 9Z"></path>
+            </svg>
+          </span>
+          General
+        </button>
+        <button class="nav-item" data-tab="branding" onclick="switchTab('branding')">
+          <span class="nav-icon">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" clip-rule="evenodd" fill="currentColor" d="M9 2C5.13 2 2 5.13 2 9c0 3.87 3.13 7 7 7 .85 0 1.5-.35 1.5-.9 0-.35-.18-.67-.47-.92a1.44 1.44 0 0 1-.53-1.08C9.5 12.27 10.17 11.5 11 11.5H12c2.21 0 4-1.79 4-4.25C16 4.85 12.87 2 9 2z M4.5 9A1 1 0 1 0 6.5 9A1 1 0 1 0 4.5 9Z M6.5 5.5A1 1 0 1 0 8.5 5.5A1 1 0 1 0 6.5 5.5Z M10.5 5.5A1 1 0 1 0 12.5 5.5A1 1 0 1 0 10.5 5.5Z"></path>
+            </svg>
+          </span>
+          Branding
+        </button>
+        <button class="nav-item" data-tab="customization" onclick="switchTab('customization')">
+          <span class="nav-icon">
+            <!-- Text/lines icon representing copy -->
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="3" width="14" height="2" rx="1" fill="currentColor"></rect>
+              <rect x="2" y="7" width="10" height="2" rx="1" fill="currentColor"></rect>
+              <rect x="2" y="11" width="12" height="2" rx="1" fill="currentColor"></rect>
+              <rect x="2" y="15" width="7" height="2" rx="1" fill="currentColor"></rect>
+            </svg>
+          </span>
+          Site Customization
+        </button>
+        <button class="nav-item" data-tab="prospects" onclick="switchTab('prospects')">
+          <span class="nav-icon">
+            <!-- Solid megaphone/bullhorn with white sound waves -->
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill="currentColor" d="M2.5 7H5L13 3V15L5 11H2.5C2.22 11 2 10.78 2 10.5V7.5C2 7.22 2.22 7 2.5 7Z"></path>
+              <path stroke="white" stroke-width="1.5" stroke-linecap="round" d="M15 6.5A3.5 3.5 0 0 1 15 11.5"></path>
+            </svg>
+          </span>
+          Marketing
+        </button>
+        <button class="nav-item" data-tab="compliance" onclick="switchTab('compliance')">
+          <span class="nav-icon">
+            <!-- Solid shield with white transparent check -->
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill="currentColor" d="M9 1.5L2.5 4.5V9.5C2.5 13.5 5.5 17 9 17.5C12.5 17 15.5 13.5 15.5 9.5V4.5L9 1.5Z"></path>
+              <path stroke="white" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" d="M6 9.5L8 11.5L12 7.5"></path>
+            </svg>
+          </span>
+          Privacy &amp; Compliance
+        </button>
+      </nav>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+
+      <!-- General Tab -->
+      <section id="tab-general" class="tab-panel">
+        <div class="main-header">
+          <h2>General</h2>
+        </div>
+
+        <div class="field-group">
+          <label for="org-name">Name</label>
+          <input type="text" id="org-name" value="Acme" placeholder="Organization name" oninput="updateSlug(this.value)">
+        </div>
+
+        <div class="field-group">
+          <label for="org-slug">Slug Name</label>
+          <input type="text" id="org-slug" value="acme" readonly="">
+        </div>
+
+        <div class="field-group">
+          <label for="scheduling-link">Scheduling Link</label>
+          <input type="url" id="scheduling-link" value="https://AcmeAdvisors.com/schedule" placeholder="https://...">
+        </div>
+
+        <div class="field-group">
+          <label for="org-start-page">Org Start Page</label>
+          <input type="url" id="org-start-page" value="https://AcmeAdvisors.com/dashboard" placeholder="https://...">
+        </div>
+
+      </section>
+
+      <!-- Site Customization Tab -->
+      <section id="tab-customization" class="tab-panel">
+        <div class="main-header">
+          <h2>Site Customization</h2>
+        </div>
+
+        <div class="customization-stack">
+
+          <!-- Version A/B tabs -->
+          <div class="version-editor-tabs">
+            <button class="version-editor-tab active" id="vetab-a" onclick="setVersion('a')">
+              Version A
+              <span class="version-default-tag">Default</span>
+            </button>
+            <button class="version-editor-tab" id="vetab-b" onclick="setVersion('b')">
+              Version B
+            </button>
+            <button class="version-editor-tab" id="vetab-add" onclick="addTemplate()" style="margin-left:auto; color: var(--primary-70);">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex-shrink:0"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              Add Template
+            </button>
+          </div>
+
+          <!-- Preview (full width) -->
+          <div class="preview-wrapper">
+            <div class="preview-toolbar">
+              <span class="preview-label">Landing Page Preview</span>
+            </div>
+            <div class="preview-scale-outer">
+            <div class="lp-preview" id="lp-preview" style="--lp-primary: #240446; --lp-accent: #7639A1;">
+              <div class="lp-nav">
+                <div class="lp-nav-knomee" id="preview-nav-logo">
+                  <svg width="1702" height="288" viewBox="0 0 1702 288" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M165.378 198.685C164.99 198.685 164.537 198.685 164.149 198.62C110.711 192.518 93.0496 170.8 87.2917 158.466C78.8167 140.224 83.2159 121.394 98.5487 110.372C112.523 100.333 130.766 101.12 141.895 112.274C146.229 116.605 146.294 123.757 142.024 128.152C137.753 132.548 130.703 132.614 126.367 128.283C122.356 124.281 115.757 125.462 111.358 128.677C108.318 130.843 101.913 137.206 107.347 148.886C110.258 155.119 121.063 169.62 159.815 175.393C180.064 141.34 175.859 123.691 173.012 117.458C170.619 112.34 167.319 109.125 163.179 107.813C159.298 106.632 154.704 107.222 150.951 109.453C145.711 112.602 138.918 110.831 135.813 105.516C132.707 100.202 134.455 93.3125 139.695 90.1632C148.817 84.6517 159.815 83.2739 169.648 86.3577C176.764 88.5885 186.598 94.0998 193.003 107.878C198.761 120.279 204.066 147.836 174.695 193.567C172.624 196.783 169.13 198.685 165.443 198.685H165.378Z" fill="white"></path>
+                    <path d="M182.923 284.948C177.554 284.948 172.572 281.405 170.89 275.893C168.884 269.136 172.636 261.984 179.235 259.95C221.093 246.959 252.6 211.922 261.398 168.487C267.803 136.796 261.656 104.515 244.124 77.5489C226.592 50.5825 199.744 32.1456 168.496 25.5844C161.703 24.1409 157.304 17.383 158.727 10.4937C160.151 3.60443 166.75 -0.85719 173.607 0.586272C211.389 8.45969 243.93 30.8333 265.15 63.508C286.37 96.1828 293.81 135.288 286.046 173.67C275.372 226.291 237.266 268.742 186.611 284.423C185.382 284.816 184.152 285.014 182.923 285.014V284.948Z" fill="white"></path>
+                    <path d="M117.96 288C117.119 288 116.278 287.934 115.437 287.737C77.6551 279.864 45.1137 257.556 23.8938 224.815C2.67386 192.142 -4.76604 153.036 2.99733 114.653C14.7718 56.39 59.6054 11.446 117.184 0.226364C124.041 -1.08587 130.64 3.4413 131.935 10.3305C133.228 17.2854 128.764 23.9778 121.971 25.2901C74.4204 34.6069 37.415 71.6777 27.6461 119.837C21.2413 151.528 27.3872 183.809 44.9196 210.775C62.4518 237.742 89.3002 256.178 120.547 262.739C127.341 264.182 131.741 270.941 130.317 277.83C129.088 283.866 123.847 288 118.025 288H117.96Z" fill="white"></path>
+                    <path d="M58.8323 136.393C57.9266 136.393 57.0208 136.262 56.1152 136.066C49.5809 134.556 45.5052 127.93 47.0578 121.303C53.0745 94.861 68.86 72.4218 91.5679 58.0527C114.211 43.6838 141.059 39.1566 167.132 45.2584C202.843 53.6568 231.179 81.0825 241.013 116.972C242.824 123.534 239.072 130.291 232.602 132.128C226.134 133.966 219.47 130.094 217.658 123.599C210.218 96.4357 188.74 75.6367 161.632 69.2724C141.901 64.614 121.586 68.0914 104.378 78.983C87.2334 89.8746 75.2648 106.868 70.6715 126.88C69.3775 132.588 64.3961 136.393 58.8323 136.393Z" fill="white"></path>
+                    <path d="M144.457 245.68C137.018 245.68 129.448 244.828 121.944 243.055C82.3504 233.804 52.4614 201.523 45.7331 160.909C44.6333 154.217 49.0973 147.853 55.6961 146.737C62.295 145.622 68.5704 150.149 69.6702 156.841C74.7811 187.614 97.4243 212.021 127.378 219.042C168.136 228.556 208.893 202.704 218.339 161.435C219.826 154.807 226.361 150.674 232.895 152.249C239.429 153.758 243.505 160.385 241.953 167.011C231.278 213.858 190.003 245.68 144.457 245.68Z" fill="white"></path>
+                    <path d="M436.702 188.382H420.788V259.505H378.607V12.0173H420.788V155.38H441.167L488.2 94.0321H536.267L472.349 172.897L543.191 259.44H491.693L436.767 188.316L436.702 188.382Z" fill="white"></path>
+                    <path d="M720.165 152.598V254.231H677.984V158.57C677.984 137.18 666.921 123.14 646.219 123.14C619.241 123.14 607.143 147.678 607.143 168.346V254.231H564.962V88.824L597.439 87.4462C600.544 98.9939 602.615 116.184 602.615 123.533H603.65C611.93 103.587 628.557 86.7245 658.252 86.7245C698.362 86.7245 720.101 114.413 720.101 152.598H720.165Z" fill="white"></path>
+                    <path d="M921.586 171.888C921.586 221.688 887.75 256.331 836.252 256.331C784.756 256.331 750.92 221.622 750.92 171.888C750.92 122.154 785.144 86.7245 836.252 86.7245C887.362 86.7245 921.586 122.154 921.586 171.888ZM878.758 171.888C878.758 142.428 862.196 121.761 836.252 121.761C810.31 121.761 793.748 142.428 793.748 171.888C793.748 201.348 810.31 221.295 836.252 221.295C862.196 200.955 878.758 171.888Z" fill="white"></path>
+                    <path d="M1217.1 153.402V254.378H1174.92V159.044C1174.92 137.654 1164.18 124.007 1143.48 124.007C1117.92 124.007 1106.47 148.218 1106.47 168.492V254.378H1064.29V159.044C1064.29 137.654 1053.55 124.007 1032.85 124.007C1007.3 124.007 996.232 148.218 996.232 168.492V254.378H954.052V88.9705L986.529 87.5926C989.634 98.4842 991.704 116.331 991.704 123.679H992.028C999.986 103.34 1016.22 87.199 1044.88 87.199C1073.54 87.199 1093.6 101.896 1101.88 125.057C1109.51 103.996 1126.08 87.199 1155.45 87.199C1194.85 87.199 1216.97 114.887 1216.97 153.467L1217.1 153.402Z" fill="white"></path>
+                    <path d="M1382.9 203.382L1404.32 226.871C1391.89 243.34 1368.02 256.331 1335.22 256.331C1280.94 256.331 1248.14 221.622 1248.14 171.888C1248.14 122.154 1280.62 86.7245 1330.76 86.7245C1380.9 86.7245 1405.74 119.99 1405.74 164.54C1405.74 175.038 1403.99 181.731 1403.99 181.731H1290.64C1294.47 206.27 1311.02 223.066 1339.75 223.066C1363.24 223.066 1376.04 211.846 1382.96 203.448L1382.9 203.382ZM1290.64 157.454H1366.02C1365.7 135.736 1352.17 119.924 1330.76 119.924C1309.34 119.924 1294.47 134.294 1290.64 157.454Z" fill="white"></path>
+                    <path d="M1564.72 203.382L1586.13 226.871C1573.71 243.34 1549.84 256.331 1517.03 256.331C1462.76 256.331 1429.96 221.622 1429.96 171.888C1429.96 122.154 1462.44 86.7245 1512.57 86.7245C1562.72 86.7245 1587.55 119.99 1587.55 164.54C1587.55 175.038 1585.81 181.731 1585.81 181.731H1472.46C1476.28 206.27 1492.85 223.066 1521.56 223.066C1545.05 223.066 1557.86 211.846 1564.79 203.448L1564.72 203.382ZM1472.46 157.454H1547.83C1547.51 135.736 1533.99 119.924 1512.57 119.924C1491.15 119.924 1476.28 134.294 1472.46 157.454Z" fill="white"></path>
+                    <path d="M1660.46 86.9999L1650.6 69.5919H1646.38V86.9999H1637.42V42.3279H1654.18C1657.64 42.3279 1660.58 42.9465 1663.02 44.1839C1665.45 45.3785 1667.26 47.0212 1668.46 49.1119C1669.69 51.1599 1670.31 53.4639 1670.31 56.0239C1670.31 58.9679 1669.46 61.6345 1667.75 64.0239C1666.05 66.3705 1663.51 67.9919 1660.14 68.8879L1670.82 86.9999H1660.46ZM1646.38 62.8719H1653.86C1656.3 62.8719 1658.11 62.2959 1659.3 61.1439C1660.5 59.9492 1661.1 58.3065 1661.1 56.2159C1661.1 54.1679 1660.5 52.5892 1659.3 51.4799C1658.11 50.3279 1656.3 49.7519 1653.86 49.7519H1646.38V62.8719Z" fill="white"></path>
+                    <path d="M1694 65C1694 42.9086 1676.09 25 1654 25C1631.91 25 1614 42.9086 1614 65C1614 87.0914 1631.91 105 1654 105C1676.09 105 1694 87.0914 1694 65ZM1702 65C1702 91.5097 1680.51 113 1654 113C1627.49 113 1606 91.5097 1606 65C1606 38.4903 1627.49 17 1654 17C1680.51 17 1702 38.4903 1702 65Z" fill="white"></path>
+                  </svg>
+                  <span class="lp-nav-knomee-advisor">Advisor</span>
+                </div>
+                <div class="lp-nav-org" id="preview-org-name" style="font-family: Inter, Poppins, sans-serif; font-weight: 400; font-style: normal;">ACME</div>
+              </div>
+              <div class="lp-body">
+                <div class="lp-welcome">Welcome!</div>
+                <div class="lp-header" id="preview-header" contenteditable="true" oninput="onPreviewInput('header')" onfocus="onPreviewFocus('header')" onblur="onPreviewBlur()" onpaste="event.preventDefault();document.execCommand('insertText',false,event.clipboardData.getData('text/plain'))">Wealth is about experiencing life fully.</div>
+                <div class="lp-subtext" id="preview-subtext" contenteditable="true" oninput="onPreviewInput('subtext')" onfocus="onPreviewFocus('subtext')" onblur="onPreviewBlur()" onpaste="event.preventDefault();document.execCommand('insertText',false,event.clipboardData.getData('text/plain'))">Take a few minutes to get clear on what matters most and what your money is really for.</div>
+                <div class="lp-cards-label">What you'll get:</div>
+                <div class="lp-cards">
+                  <div class="lp-card">
+                    <div class="lp-card-icon"><svg width="25" height="28" viewBox="0 0 25 28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.50369 16.249C2.26721 16.2498 2.03535 16.1835 1.83506 16.0578C1.63476 15.932 1.47425 15.7521 1.37217 15.5387C1.2701 15.3254 1.23064 15.0875 1.25839 14.8527C1.28614 14.6178 1.37996 14.3957 1.52895 14.212L13.9007 1.46533C13.9935 1.35821 14.12 1.28583 14.2594 1.26005C14.3987 1.23428 14.5427 1.25665 14.6677 1.3235C14.7927 1.39035 14.8912 1.4977 14.9471 1.62793C15.003 1.75816 15.013 1.90353 14.9754 2.04018L12.5761 9.56322C12.5053 9.75258 12.4816 9.95627 12.5068 10.1568C12.5321 10.3574 12.6056 10.5488 12.7211 10.7147C12.8367 10.8806 12.9907 11.016 13.17 11.1093C13.3493 11.2026 13.5486 11.2509 13.7508 11.2503H22.4985C22.735 11.2495 22.9668 11.3158 23.1671 11.4415C23.3674 11.5672 23.5279 11.7472 23.63 11.9605C23.7321 12.1738 23.7715 12.4117 23.7438 12.6466C23.716 12.8814 23.6222 13.1036 23.4732 13.2873L11.1015 26.0339C11.0086 26.1411 10.8822 26.2134 10.7428 26.2392C10.6035 26.265 10.4595 26.2426 10.3345 26.1758C10.2095 26.1089 10.111 26.0016 10.0551 25.8713C9.99913 25.7411 9.98915 25.5957 10.0267 25.4591L12.4261 17.936C12.4969 17.7467 12.5206 17.543 12.4954 17.3424C12.4701 17.1419 12.3965 16.9504 12.281 16.7846C12.1655 16.6187 12.0115 16.4833 11.8322 16.39C11.6528 16.2967 11.4536 16.2483 11.2514 16.249H2.50369Z" fill="#FFEAA7" stroke="#FF9525" stroke-width="2.49935" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <div class="lp-card-title">Discover What Matters Most</div>
+                    <div class="lp-card-desc">A quick, guided experience that clarifies your values, goals, and priorities.</div>
+                  </div>
+                  <div class="lp-card">
+                    <div class="lp-card-icon"><svg width="16" height="25" viewBox="0 0 16 25" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.6368 7.95438C13.6368 6.44742 13.0378 5.00216 11.9722 3.93657C10.9066 2.87099 9.46135 2.27192 7.95438 2.27192C6.44742 2.27192 5.00216 2.87099 3.93657 3.93657C2.87099 5.00216 2.27192 6.44742 2.27192 7.95438C2.27192 8.86823 2.42978 9.91385 3.64359 11.1279C4.50298 11.9873 5.36808 13.0917 5.65982 14.5504C5.78259 15.1657 5.38283 15.7644 4.76757 15.8875C4.15232 16.0102 3.55357 15.6105 3.43052 14.9952C3.26761 14.1814 2.76884 13.4666 2.03754 12.7353C0.297103 10.9948 0 9.31324 0 7.95438C0 5.84463 0.837365 3.821 2.32918 2.32918C3.821 0.837365 5.84463 0 7.95438 0C10.0641 0 12.0878 0.837365 13.5796 2.32918C15.0714 3.821 15.9088 5.84463 15.9088 7.95438C15.9088 9.6942 15.2463 11.4731 13.8712 12.7353C13.0376 13.569 12.643 14.1718 12.4782 14.9952C12.3552 15.6105 11.7564 16.0102 11.1412 15.8875H4.76757C5.38283 15.7644 5.78259 15.1657 5.65982 14.5504C5.36808 13.1013 4.50298 11.9873 3.64359 11.1279L3.60098 11.0866C2.73323 10.3055 2.27192 9.15071 2.27192 7.95438Z" fill="#E9D9F4"/><path d="M13.6368 7.95438C13.6368 6.44742 13.0378 5.00216 11.9722 3.93657C10.9066 2.87099 9.46135 2.27192 7.95438 2.27192C6.44742 2.27192 5.00216 2.87099 3.93657 3.93657C2.87099 5.00216 2.27192 6.44742 2.27192 7.95438C2.27192 8.86823 2.42978 9.91385 3.64359 11.1279C4.50298 11.9873 5.36808 13.0917 5.65982 14.5504C5.78259 15.1657 5.38283 15.7644 4.76757 15.8875C4.15232 16.0102 3.55357 15.6105 3.43052 14.9952C3.26761 14.1814 2.76884 13.4666 2.03754 12.7353C0.297103 10.9948 0 9.31324 0 7.95438C0 5.84463 0.837365 3.821 2.32918 2.32918C3.821 0.837365 5.84463 0 7.95438 0C10.0641 0 12.0878 0.837365 13.5796 2.32918C15.0714 3.821 15.9088 5.84463 15.9088 7.95438C15.9088 9.6942 15.2463 11.4731 13.8712 12.7353C13.0376 13.569 12.643 14.1718 12.4782 14.9952C12.3552 15.6105 11.7564 16.0102 11.1412 15.8875C10.5259 15.7644 10.1262 15.1657 10.2489 14.5504C10.5388 13.1013 11.2809 12.1121 12.2652 11.1279L12.3078 11.0866C13.1756 10.3055 13.6368 9.15071 13.6368 7.95438Z" fill="#8200DB"/><path d="M11.3636 18.1825C11.9912 18.1825 12.4996 18.6908 12.4996 19.3184C12.4996 19.946 11.9912 20.4544 11.3636 20.4544H4.54517C3.91755 20.4544 3.40921 19.946 3.40921 19.3184C3.40921 18.6908 3.91755 18.1825 4.54517 18.1825H11.3636Z" fill="#8200DB"/><path d="M10.2267 22.7281C10.8544 22.7281 11.364 23.2364 11.364 23.864C11.364 24.4917 10.8544 25 10.2267 25H5.68158C5.05396 25 4.54562 24.4917 4.54562 23.864C4.54562 23.2364 5.05396 22.7281 5.68158 22.7281H10.2267Z" fill="#8200DB"/></svg></div>
+                    <div class="lp-card-title">See Your Personal Insights</div>
+                    <div class="lp-card-desc">Receive a personalized summary of what's driving your financial decisions.</div>
+                  </div>
+                  <div class="lp-card">
+                    <div class="lp-card-icon"><svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.498 0C12.87 0 13.2324 0.121418 13.5287 0.346242C13.7879 0.542868 13.985 0.808683 14.0974 1.11197L14.14 1.24514L14.1466 1.26778L15.9431 8.23923C15.9939 8.43569 16.0966 8.6151 16.2401 8.75859C16.3836 8.90204 16.5629 9.00486 16.7594 9.05556L23.7309 10.852L23.7495 10.8573C24.064 10.9442 24.3463 11.1184 24.5632 11.3594L24.6524 11.4673L24.7323 11.5818C24.9071 11.8551 25 12.1743 25 12.5007C24.9999 12.8735 24.8783 13.2361 24.6524 13.5327C24.4265 13.8294 24.109 14.0434 23.7495 14.1427L23.7309 14.148L16.7594 15.9444C16.563 15.9951 16.3836 16.098 16.2401 16.2414C16.0966 16.3849 15.9939 16.5644 15.9431 16.7608L14.1453 23.7322C14.1434 23.7396 14.1407 23.7475 14.1387 23.7549C14.0384 24.1131 13.8238 24.4289 13.5274 24.6538C13.2312 24.8785 12.8698 24.9999 12.498 25C12.126 25 11.7636 24.8786 11.4673 24.6538C11.171 24.4289 10.9563 24.113 10.856 23.7549C10.854 23.7475 10.8513 23.7396 10.8494 23.7322L9.0529 16.7608C9.00212 16.5644 8.89938 16.3849 8.75593 16.2414C8.6124 16.098 8.43302 15.9951 8.23656 15.9444L1.26511 14.1466C1.25631 14.1444 1.24723 14.1425 1.23848 14.14C0.88172 14.0387 0.567174 13.8233 0.343579 13.5274C0.148248 13.2687 0.031622 12.9603 0.0053268 12.6392L0 12.5007L0.0053268 12.3622C0.0314305 12.0405 0.147969 11.7316 0.343579 11.4726L0.432802 11.3647C0.647505 11.1243 0.926574 10.9486 1.23848 10.86C1.24724 10.8575 1.2563 10.8556 1.26511 10.8534L8.23656 9.05423L8.38039 9.00629C8.52057 8.9494 8.64818 8.86489 8.75593 8.75726C8.89951 8.61377 9.00208 8.43443 9.0529 8.23789L10.8507 1.26778L10.8573 1.24514C10.9576 0.886902 11.1722 0.571067 11.4686 0.346242L11.5831 0.26634C11.8557 0.0927664 12.1729 0.000116268 12.498 0ZM11.2542 8.80653C11.1018 9.39593 10.7938 9.93422 10.3633 10.3646C9.93252 10.7951 9.39356 11.1022 8.80387 11.2542L3.97779 12.4993L8.80387 13.7445C9.39333 13.8967 9.93274 14.2036 10.3633 14.634C10.7941 15.0648 11.102 15.6036 11.2542 16.1935L12.4967 21.0182L13.7418 16.1935C13.894 15.6036 14.2019 15.0648 14.6327 14.634C15.0634 14.2034 15.6024 13.8966 16.1921 13.7445L21.0195 12.4993L16.1921 11.2555C15.6024 11.1034 15.0635 10.7966 14.6327 10.366C14.2557 9.9889 13.9724 9.52924 13.8057 9.02493L13.7418 8.80653L12.498 3.98045L11.2542 8.80653Z" fill="#009966"/><path d="M20.4532 6.8177V2.27261C20.4532 1.645 20.9615 1.13667 21.5891 1.13667C22.2167 1.13667 22.7251 1.645 22.7251 2.27261V6.8177C22.7251 7.44531 22.2167 7.95497 21.5891 7.95497C20.9615 7.95497 20.4532 7.44531 20.4532 6.8177Z" fill="#009966"/><path d="M23.8614 3.40943C24.489 3.40943 24.9987 3.91777 24.9987 4.54537C24.9987 5.17298 24.489 5.68131 23.8614 5.68131H19.3163C18.6887 5.68131 18.1804 5.17298 18.1804 4.54537C18.1804 3.91777 18.6887 3.40943 19.3163 3.40943H23.8614Z" fill="#009966"/><path d="M2.27103 20.4552V18.182C2.27103 17.5544 2.77937 17.046 3.40698 17.046C4.03458 17.046 4.54291 17.5544 4.54291 18.182V20.4552C4.54268 21.0826 4.03443 21.5911 3.40698 21.5911C2.77952 21.5911 2.27127 21.0826 2.27103 20.4552Z" fill="#009966"/><path d="M4.54291 18.182C5.17032 18.1822 5.67974 18.6909 5.67974 19.3184C5.67974 19.9458 5.17032 20.455 4.54291 20.4552H2.27103C1.64343 20.4552 1.13465 19.946 1.13465 19.3184C1.13465 18.6908 1.64343 18.182 2.27103 18.182H4.54291Z" fill="#009966"/><path d="M11.2542 8.80653C11.1018 9.39593 10.7938 9.93422 10.3633 10.3646C9.93252 10.7951 9.39356 11.1022 8.80387 11.2542L3.97779 12.4993L8.80387 13.7445C9.39333 13.8967 9.93274 14.2036 10.3633 14.634C10.7941 15.0648 11.102 15.6036 11.2542 16.1935L12.4967 21.0182L13.7418 16.1935C13.894 15.6036 14.2019 15.0648 14.6327 14.634C15.0634 14.2034 15.6024 13.8966 16.1921 13.7445L21.0195 12.4993L16.1921 11.2555C15.6024 11.1034 15.0635 10.7966 14.6327 10.366C14.2557 9.9889 13.9724 9.52924 13.8057 9.02493L13.7418 8.80653L12.498 3.98045L11.2542 8.80653Z" fill="#AFFC41"/></svg></div>
+                    <div class="lp-card-title">Get Your 3 Most Important Money Questions</div>
+                    <div class="lp-card-desc">Walk away with questions to help you think, plan, and prepare for what's next.</div>
+                  </div>
+                </div>
+                <button class="lp-cta">Discover Financial Joy</button>
+                <div class="lp-est">🕐 Est time: 8 min</div>
+              </div>
+              <div id="preview-char-badge" class="preview-char-badge"></div>
+            </div><!-- /lp-preview -->
+          </div><!-- /preview-scale-outer -->
+          </div><!-- /preview-wrapper -->
+
+          <!-- Hidden backing store per version -->
+          <input type="hidden" id="va-header" value="Wealth is about experiencing life fully.">
+          <input type="hidden" id="va-subtext" value="Take a few minutes to get clear on what matters most and what your money is really for.">
+          <input type="hidden" id="vb-header" value="Wealth is about experiencing life fully.">
+          <input type="hidden" id="vb-subtext" value="Take a few minutes to get clear on what matters most and what your money is really for.">
+
+          </div><!-- /customization-stack -->
+
+      </section>
+
+      <!-- Marketing Tab -->
+      <section id="tab-prospects" class="tab-panel">
+        <div class="main-header">
+          <h2>Marketing</h2>
+        </div>
+
+        <div>
+          <p class="section-label">Allowed Prospect UTM Keys</p>
+          <div class="checkbox-grid">
+            <label class="checkbox-item">
+              <input type="checkbox">
+              <span class="utm-label">
+                <span class="utm-desc">Where traffic came from</span>
+                <span class="utm-key">utm_source</span>
+              </span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox">
+              <span class="utm-label">
+                <span class="utm-desc">Marketing channel type</span>
+                <span class="utm-key">utm_medium</span>
+              </span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox">
+              <span class="utm-label">
+                <span class="utm-desc">Campaign name identifier</span>
+                <span class="utm-key">utm_campaign</span>
+              </span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox">
+              <span class="utm-label">
+                <span class="utm-desc">Paid keyword targeted</span>
+                <span class="utm-key">utm_term</span>
+              </span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox">
+              <span class="utm-label">
+                <span class="utm-desc">Ad creative variant</span>
+                <span class="utm-key">utm_content</span>
+              </span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox">
+              <span class="utm-label">
+                <span class="utm-desc">Unique campaign ID</span>
+                <span class="utm-key">utm_id</span>
+              </span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox">
+              <span class="utm-label">
+                <span class="utm-desc">First page visited</span>
+                <span class="utm-key">landing_page_url</span>
+              </span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox">
+              <span class="utm-label">
+                <span class="utm-desc">Referring website URL</span>
+                <span class="utm-key">referrer_url</span>
+              </span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox">
+              <span class="utm-label">
+                <span class="utm-desc">First visit timestamp</span>
+                <span class="utm-key">first_touch_at</span>
+              </span>
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox">
+              <span class="utm-label">
+                <span class="utm-desc">Latest visit timestamp</span>
+                <span class="utm-key">last_touch_at</span>
+              </span>
+            </label>
+          </div>
+          <div class="custom-key-group">
+            <div class="custom-key-fields">
+              <input type="text" id="custom-key-desc" placeholder="Brief description (3–5 words)" onkeydown="if(event.key==='Enter')addCustomKey()">
+              <input type="text" id="custom-key" placeholder="custom_key" onkeydown="if(event.key==='Enter')addCustomKey()">
+            </div>
+            <button class="btn-add" onclick="addCustomKey()">Add</button>
+          </div>
+        </div>
+
+
+
+      </section>
+
+      <!-- Access Tab -->
+      <section id="tab-access" class="tab-panel active">
+        <div class="main-header">
+          <h2>Advisory Team Access</h2>
+        </div>
+
+        <div>
+          <div class="advisors-box">
+            <label class="checkbox-item"><input type="checkbox"> Sarah Mitchell</label>
+            <label class="checkbox-item"><input type="checkbox"> James Okafor</label>
+            <label class="checkbox-item"><input type="checkbox"> Taylor Fah</label>
+            <label class="checkbox-item"><input type="checkbox"> Priya Anand</label>
+            <label class="checkbox-item"><input type="checkbox"> New Advisor</label>
+            <label class="checkbox-item"><input type="checkbox"> Advisor Test</label>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Branding Tab -->
+      <section id="tab-branding" class="tab-panel">
+        <div class="main-header">
+          <h2>Branding</h2>
+        </div>
+
+        <!-- Two-column grid -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px 24px; align-items:end;">
+
+          <!-- Name -->
+          <div class="field-group">
+            <label for="brand-name">Name</label>
+            <input type="text" id="brand-name" value="Acme" placeholder="Organization name" oninput="syncBrandName(this.value)">
+          </div>
+
+          <!-- Logo -->
+          <div class="field-group">
+            <label>Logo</label>
+            <div class="logo-upload-wrap">
+              <input type="file" id="logo-file" accept="image/*" onchange="handleLogoUpload(this)" style="position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;z-index:1;">
+              <div class="logo-placeholder" id="logo-placeholder">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 13l4-4 3 3 2-2 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="1.5" y="1.5" width="15" height="15" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="6" cy="6" r="1.5" fill="currentColor"/></svg>
+                <span>Click to upload logo</span>
+              </div>
+              <img id="logo-preview-img" style="display:none; max-height:28px; max-width:160px; object-fit:contain;">
+            </div>
+          </div>
+
+          <!-- Primary Color -->
+          <div class="color-field">
+            <label>Primary Color</label>
+            <div class="color-input-wrap">
+              <div class="color-swatch" id="swatch-primary" style="background:#240446;">
+                <input type="color" value="#240446" oninput="updateColor('primary', this.value)">
+              </div>
+              <div class="hex-input-wrap">
+                <span class="hex-prefix">#</span>
+                <input class="color-hex" id="hex-primary" type="text" value="240446" maxlength="6" oninput="updateColorFromHex('primary', this.value)">
+              </div>
+            </div>
+          </div>
+
+          <!-- Accent Color -->
+          <div class="color-field">
+            <label>Accent Color</label>
+            <div class="color-input-wrap">
+              <div class="color-swatch" id="swatch-accent" style="background:#7639A1;">
+                <input type="color" value="#7639A1" oninput="updateColor('accent', this.value)">
+              </div>
+              <div class="hex-input-wrap">
+                <span class="hex-prefix">#</span>
+                <input class="color-hex" id="hex-accent" type="text" value="7639A1" maxlength="6" oninput="updateColorFromHex('accent', this.value)">
+              </div>
+            </div>
+          </div>
+
+          <!-- Font Family -->
+          <div class="font-field">
+            <label for="font-family">Font Family</label>
+            <input type="text" id="font-family" value="Inter" placeholder="Search Google Fonts…" autocomplete="off" oninput="filterFontDropdown('font-family'); updateFontPreview()" onfocus="openFontDropdown('font-family')" onblur="closeFontDropdown('font-family')" style="font-family: Inter, Poppins, sans-serif; font-weight: 400; font-style: normal;">
+            <div class="custom-dropdown" id="dd-font-family"></div>
+          </div>
+
+          <!-- Font Type -->
+          <div class="font-field">
+            <label for="font-type">Font Type</label>
+            <input type="text" id="font-type" value="Regular" placeholder="e.g. Regular, Bold…" autocomplete="off" oninput="filterFontDropdown('font-type'); updateFontPreview()" onfocus="openFontDropdown('font-type')" onblur="closeFontDropdown('font-type')" style="font-family: Inter, Poppins, sans-serif; font-weight: 400; font-style: normal;">
+            <div class="custom-dropdown" id="dd-font-type"></div>
+          </div>
+
+        </div>
+
+        <!-- Trademark -->
+        <div style="margin-top:8px;">
+          <p class="section-label">Registered Trademark</p>
+          <label class="checkbox-item">
+            <input type="checkbox" id="hide-trademark" onchange="updatePreview()">
+            Hide the &reg; mark next to the organization name
+          </label>
+          <p class="trademark-hint">When checked, the &reg; symbol is not displayed next to the org name in the header.</p>
+        </div>
+
+        <!-- Website Preview -->
+        <div>
+
+          <div class="preview-wrapper">
+            <div class="preview-toolbar">
+              <span class="preview-label">Landing Page Preview</span>
+            </div>
+            <div class="preview-scale-outer">
+              <div class="lp-preview" id="lp-preview-b" style="--lp-primary:#240446; --lp-accent:#7639A1;">
+                <div class="lp-nav">
+                  <div class="lp-nav-knomee" id="preview-nav-logo-b">
+                    <svg width="1702" height="288" viewBox="0 0 1702 288" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M165.378 198.685C164.99 198.685 164.537 198.685 164.149 198.62C110.711 192.518 93.0496 170.8 87.2917 158.466C78.8167 140.224 83.2159 121.394 98.5487 110.372C112.523 100.333 130.766 101.12 141.895 112.274C146.229 116.605 146.294 123.757 142.024 128.152C137.753 132.548 130.703 132.614 126.367 128.283C122.356 124.281 115.757 125.462 111.358 128.677C108.318 130.843 101.913 137.206 107.347 148.886C110.258 155.119 121.063 169.62 159.815 175.393C180.064 141.34 175.859 123.691 173.012 117.458C170.619 112.34 167.319 109.125 163.179 107.813C159.298 106.632 154.704 107.222 150.951 109.453C145.711 112.602 138.918 110.831 135.813 105.516C132.707 100.202 134.455 93.3125 139.695 90.1632C148.817 84.6517 159.815 83.2739 169.648 86.3577C176.764 88.5885 186.598 94.0998 193.003 107.878C198.761 120.279 204.066 147.836 174.695 193.567C172.624 196.783 169.13 198.685 165.443 198.685H165.378Z" fill="white"/><path d="M182.923 284.948C177.554 284.948 172.572 281.405 170.89 275.893C168.884 269.136 172.636 261.984 179.235 259.95C221.093 246.959 252.6 211.922 261.398 168.487C267.803 136.796 261.656 104.515 244.124 77.5489C226.592 50.5825 199.744 32.1456 168.496 25.5844C161.703 24.1409 157.304 17.383 158.727 10.4937C160.151 3.60443 166.75 -0.85719 173.607 0.586272C211.389 8.45969 243.93 30.8333 265.15 63.508C286.37 96.1828 293.81 135.288 286.046 173.67C275.372 226.291 237.266 268.742 186.611 284.423C185.382 284.816 184.152 285.014 182.923 285.014V284.948Z" fill="white"/><path d="M117.96 288C117.119 288 116.278 287.934 115.437 287.737C77.6551 279.864 45.1137 257.556 23.8938 224.815C2.67386 192.142 -4.76604 153.036 2.99733 114.653C14.7718 56.39 59.6054 11.446 117.184 0.226364C124.041 -1.08587 130.64 3.4413 131.935 10.3305C133.228 17.2854 128.764 23.9778 121.971 25.2901C74.4204 34.6069 37.415 71.6777 27.6461 119.837C21.2413 151.528 27.3872 183.809 44.9196 210.775C62.4518 237.742 89.3002 256.178 120.547 262.739C127.341 264.182 131.741 270.941 130.317 277.83C129.088 283.866 123.847 288 118.025 288H117.96Z" fill="white"/><path d="M58.8323 136.393C57.9266 136.393 57.0208 136.262 56.1152 136.066C49.5809 134.556 45.5052 127.93 47.0578 121.303C53.0745 94.861 68.86 72.4218 91.5679 58.0527C114.211 43.6838 141.059 39.1566 167.132 45.2584C202.843 53.6568 231.179 81.0825 241.013 116.972C242.824 123.534 239.072 130.291 232.602 132.128C226.134 133.966 219.47 130.094 217.658 123.599C210.218 96.4357 188.74 75.6367 161.632 69.2724C141.901 64.614 121.586 68.0914 104.378 78.983C87.2334 89.8746 75.2648 106.868 70.6715 126.88C69.3775 132.588 64.3961 136.393 58.8323 136.393Z" fill="white"/><path d="M144.457 245.68C137.018 245.68 129.448 244.828 121.944 243.055C82.3504 233.804 52.4614 201.523 45.7331 160.909C44.6333 154.217 49.0973 147.853 55.6961 146.737C62.295 145.622 68.5704 150.149 69.6702 156.841C74.7811 187.614 97.4243 212.021 127.378 219.042C168.136 228.556 208.893 202.704 218.339 161.435C219.826 154.807 226.361 150.674 232.895 152.249C239.429 153.758 243.505 160.385 241.953 167.011C231.278 213.858 190.003 245.68 144.457 245.68Z" fill="white"/><path d="M436.702 188.382H420.788V259.505H378.607V12.0173H420.788V155.38H441.167L488.2 94.0321H536.267L472.349 172.897L543.191 259.44H491.693L436.767 188.316L436.702 188.382Z" fill="white"/><path d="M720.165 152.598V254.231H677.984V158.57C677.984 137.18 666.921 123.14 646.219 123.14C619.241 123.14 607.143 147.678 607.143 168.346V254.231H564.962V88.824L597.439 87.4462C600.544 98.9939 602.615 116.184 602.615 123.533H603.65C611.93 103.587 628.557 86.7245 658.252 86.7245C698.362 86.7245 720.101 114.413 720.101 152.598H720.165Z" fill="white"/><path d="M921.586 171.888C921.586 221.688 887.75 256.331 836.252 256.331C784.756 256.331 750.92 221.622 750.92 171.888C750.92 122.154 785.144 86.7245 836.252 86.7245C887.362 86.7245 921.586 122.154 921.586 171.888ZM878.758 171.888C878.758 142.428 862.196 121.761 836.252 121.761C810.31 121.761 793.748 142.428 793.748 171.888C793.748 201.348 810.31 221.295 836.252 221.295C862.196 200.955 878.758 171.888Z" fill="white"/><path d="M1217.1 153.402V254.378H1174.92V159.044C1174.92 137.654 1164.18 124.007 1143.48 124.007C1117.92 124.007 1106.47 148.218 1106.47 168.492V254.378H1064.29V159.044C1064.29 137.654 1053.55 124.007 1032.85 124.007C1007.3 124.007 996.232 148.218 996.232 168.492V254.378H954.052V88.9705L986.529 87.5926C989.634 98.4842 991.704 116.331 991.704 123.679H992.028C999.986 103.34 1016.22 87.199 1044.88 87.199C1073.54 87.199 1093.6 101.896 1101.88 125.057C1109.51 103.996 1126.08 87.199 1155.45 87.199C1194.85 87.199 1216.97 114.887 1216.97 153.467L1217.1 153.402Z" fill="white"/><path d="M1382.9 203.382L1404.32 226.871C1391.89 243.34 1368.02 256.331 1335.22 256.331C1280.94 256.331 1248.14 221.622 1248.14 171.888C1248.14 122.154 1280.62 86.7245 1330.76 86.7245C1380.9 86.7245 1405.74 119.99 1405.74 164.54C1405.74 175.038 1403.99 181.731 1403.99 181.731H1290.64C1294.47 206.27 1311.02 223.066 1339.75 223.066C1363.24 223.066 1376.04 211.846 1382.96 203.448L1382.9 203.382ZM1290.64 157.454H1366.02C1365.7 135.736 1352.17 119.924 1330.76 119.924C1309.34 119.924 1294.47 134.294 1290.64 157.454Z" fill="white"/><path d="M1564.72 203.382L1586.13 226.871C1573.71 243.34 1549.84 256.331 1517.03 256.331C1462.76 256.331 1429.96 221.622 1429.96 171.888C1429.96 122.154 1462.44 86.7245 1512.57 86.7245C1562.72 86.7245 1587.55 119.99 1587.55 164.54C1587.55 175.038 1585.81 181.731 1585.81 181.731H1472.46C1476.28 206.27 1492.85 223.066 1521.56 223.066C1545.05 223.066 1557.86 211.846 1564.79 203.448L1564.72 203.382ZM1472.46 157.454H1547.83C1547.51 135.736 1533.99 119.924 1512.57 119.924C1491.15 119.924 1476.28 134.294 1472.46 157.454Z" fill="white"/></svg>
+                    <span class="lp-nav-knomee-advisor">Advisor</span>
+                  </div>
+                  <div class="lp-nav-org" id="preview-org-name-b" style="font-family:Inter,Poppins,sans-serif;font-weight:400;">ACME</div>
+                </div>
+                <div class="lp-body">
+                  <div class="lp-welcome">Welcome!</div>
+                  <div class="lp-header" id="preview-header-b">Wealth is about experiencing life fully.</div>
+                  <div class="lp-subtext" id="preview-subtext-b">Take a few minutes to get clear on what matters most and what your money is really for.</div>
+                  <div class="lp-cards-label">What you'll get:</div>
+                  <div class="lp-cards">
+                    <div class="lp-card">
+                      <div class="lp-card-icon"><svg width="25" height="28" viewBox="0 0 25 28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.50369 16.249C2.26721 16.2498 2.03535 16.1835 1.83506 16.0578C1.63476 15.932 1.47425 15.7521 1.37217 15.5387C1.2701 15.3254 1.23064 15.0875 1.25839 14.8527C1.28614 14.6178 1.37996 14.3957 1.52895 14.212L13.9007 1.46533C13.9935 1.35821 14.12 1.28583 14.2594 1.26005C14.3987 1.23428 14.5427 1.25665 14.6677 1.3235C14.7927 1.39035 14.8912 1.4977 14.9471 1.62793C15.003 1.75816 15.013 1.90353 14.9754 2.04018L12.5761 9.56322C12.5053 9.75258 12.4816 9.95627 12.5068 10.1568C12.5321 10.3574 12.6056 10.5488 12.7211 10.7147C12.8367 10.8806 12.9907 11.016 13.17 11.1093C13.3493 11.2026 13.5486 11.2509 13.7508 11.2503H22.4985C22.735 11.2495 22.9668 11.3158 23.1671 11.4415C23.3674 11.5672 23.5279 11.7472 23.63 11.9605C23.7321 12.1738 23.7715 12.4117 23.7438 12.6466C23.716 12.8814 23.6222 13.1036 23.4732 13.2873L11.1015 26.0339C11.0086 26.1411 10.8822 26.2134 10.7428 26.2392C10.6035 26.265 10.4595 26.2426 10.3345 26.1758C10.2095 26.1089 10.111 26.0016 10.0551 25.8713C9.99913 25.7411 9.98915 25.5957 10.0267 25.4591L12.4261 17.936C12.4969 17.7467 12.5206 17.543 12.4954 17.3424C12.4701 17.1419 12.3965 16.9504 12.281 16.7846C12.1655 16.6187 12.0115 16.4833 11.8322 16.39C11.6528 16.2967 11.4536 16.2483 11.2514 16.249H2.50369Z" fill="#FFEAA7" stroke="#FF9525" stroke-width="2.49935" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                      <div class="lp-card-title">Discover What Matters Most</div>
+                      <div class="lp-card-desc">A quick, guided experience that clarifies your values, goals, and priorities.</div>
+                    </div>
+                    <div class="lp-card">
+                      <div class="lp-card-icon"><svg width="16" height="25" viewBox="0 0 16 25" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.6368 7.95438C13.6368 6.44742 13.0378 5.00216 11.9722 3.93657C10.9066 2.87099 9.46135 2.27192 7.95438 2.27192C6.44742 2.27192 5.00216 2.87099 3.93657 3.93657C2.87099 5.00216 2.27192 6.44742 2.27192 7.95438C2.27192 8.86823 2.42978 9.91385 3.64359 11.1279C4.50298 11.9873 5.36808 13.0917 5.65982 14.5504C5.78259 15.1657 5.38283 15.7644 4.76757 15.8875C4.15232 16.0102 3.55357 15.6105 3.43052 14.9952C3.26761 14.1814 2.76884 13.4666 2.03754 12.7353C0.297103 10.9948 0 9.31324 0 7.95438C0 5.84463 0.837365 3.821 2.32918 2.32918C3.821 0.837365 5.84463 0 7.95438 0C10.0641 0 12.0878 0.837365 13.5796 2.32918C15.0714 3.821 15.9088 5.84463 15.9088 7.95438C15.9088 9.6942 15.2463 11.4731 13.8712 12.7353C13.0376 13.569 12.643 14.1718 12.4782 14.9952C12.3552 15.6105 11.7564 16.0102 11.1412 15.8875H4.76757C5.38283 15.7644 5.78259 15.1657 5.65982 14.5504C5.36808 13.1013 4.50298 11.9873 3.64359 11.1279L3.60098 11.0866C2.73323 10.3055 2.27192 9.15071 2.27192 7.95438Z" fill="#E9D9F4"/><path d="M13.6368 7.95438C13.6368 6.44742 13.0378 5.00216 11.9722 3.93657C10.9066 2.87099 9.46135 2.27192 7.95438 2.27192C6.44742 2.27192 5.00216 2.87099 3.93657 3.93657C2.87099 5.00216 2.27192 6.44742 2.27192 7.95438C2.27192 8.86823 2.42978 9.91385 3.64359 11.1279C4.50298 11.9873 5.36808 13.0917 5.65982 14.5504C5.78259 15.1657 5.38283 15.7644 4.76757 15.8875C4.15232 16.0102 3.55357 15.6105 3.43052 14.9952C3.26761 14.1814 2.76884 13.4666 2.03754 12.7353C0.297103 10.9948 0 9.31324 0 7.95438C0 5.84463 0.837365 3.821 2.32918 2.32918C3.821 0.837365 5.84463 0 7.95438 0C10.0641 0 12.0878 0.837365 13.5796 2.32918C15.0714 3.821 15.9088 5.84463 15.9088 7.95438C15.9088 9.6942 15.2463 11.4731 13.8712 12.7353C13.0376 13.569 12.643 14.1718 12.4782 14.9952C12.3552 15.6105 11.7564 16.0102 11.1412 15.8875C10.5259 15.7644 10.1262 15.1657 10.2489 14.5504C10.5388 13.1013 11.2809 12.1121 12.2652 11.1279L12.3078 11.0866C13.1756 10.3055 13.6368 9.15071 13.6368 7.95438Z" fill="#8200DB"/><path d="M11.3636 18.1825C11.9912 18.1825 12.4996 18.6908 12.4996 19.3184C12.4996 19.946 11.9912 20.4544 11.3636 20.4544H4.54517C3.91755 20.4544 3.40921 19.946 3.40921 19.3184C3.40921 18.6908 3.91755 18.1825 4.54517 18.1825H11.3636Z" fill="#8200DB"/><path d="M10.2267 22.7281C10.8544 22.7281 11.364 23.2364 11.364 23.864C11.364 24.4917 10.8544 25 10.2267 25H5.68158C5.05396 25 4.54562 24.4917 4.54562 23.864C4.54562 23.2364 5.05396 22.7281 5.68158 22.7281H10.2267Z" fill="#8200DB"/></svg></div>
+                      <div class="lp-card-title">See Your Personal Insights</div>
+                      <div class="lp-card-desc">Receive a personalized summary of what's driving your financial decisions.</div>
+                    </div>
+                    <div class="lp-card">
+                      <div class="lp-card-icon"><svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.498 0C12.87 0 13.2324 0.121418 13.5287 0.346242C13.7879 0.542868 13.985 0.808683 14.0974 1.11197L14.14 1.24514L14.1466 1.26778L15.9431 8.23923C15.9939 8.43569 16.0966 8.6151 16.2401 8.75859C16.3836 8.90204 16.5629 9.00486 16.7594 9.05556L23.7309 10.852L23.7495 10.8573C24.064 10.9442 24.3463 11.1184 24.5632 11.3594L24.6524 11.4673L24.7323 11.5818C24.9071 11.8551 25 12.1743 25 12.5007C24.9999 12.8735 24.8783 13.2361 24.6524 13.5327C24.4265 13.8294 24.109 14.0434 23.7495 14.1427L23.7309 14.148L16.7594 15.9444C16.563 15.9951 16.3836 16.098 16.2401 16.2414C16.0966 16.3849 15.9939 16.5644 15.9431 16.7608L14.1453 23.7322C14.1434 23.7396 14.1407 23.7475 14.1387 23.7549C14.0384 24.1131 13.8238 24.4289 13.5274 24.6538C13.2312 24.8785 12.8698 24.9999 12.498 25C12.126 25 11.7636 24.8786 11.4673 24.6538C11.171 24.4289 10.9563 24.113 10.856 23.7549C10.854 23.7475 10.8513 23.7396 10.8494 23.7322L9.0529 16.7608C9.00212 16.5644 8.89938 16.3849 8.75593 16.2414C8.6124 16.098 8.43302 15.9951 8.23656 15.9444L1.26511 14.1466C1.25631 14.1444 1.24723 14.1425 1.23848 14.14C0.88172 14.0387 0.567174 13.8233 0.343579 13.5274C0.148248 13.2687 0.031622 12.9603 0.0053268 12.6392L0 12.5007L0.0053268 12.3622C0.0314305 12.0405 0.147969 11.7316 0.343579 11.4726L0.432802 11.3647C0.647505 11.1243 0.926574 10.9486 1.23848 10.86C1.24724 10.8575 1.2563 10.8556 1.26511 10.8534L8.23656 9.05423L8.38039 9.00629C8.52057 8.9494 8.64818 8.86489 8.75593 8.75726C8.89951 8.61377 9.00208 8.43443 9.0529 8.23789L10.8507 1.26778L10.8573 1.24514C10.9576 0.886902 11.1722 0.571067 11.4686 0.346242L11.5831 0.26634C11.8557 0.0927664 12.1729 0.000116268 12.498 0ZM11.2542 8.80653C11.1018 9.39593 10.7938 9.93422 10.3633 10.3646C9.93252 10.7951 9.39356 11.1022 8.80387 11.2542L3.97779 12.4993L8.80387 13.7445C9.39333 13.8967 9.93274 14.2036 10.3633 14.634C10.7941 15.0648 11.102 15.6036 11.2542 16.1935L12.4967 21.0182L13.7418 16.1935C13.894 15.6036 14.2019 15.0648 14.6327 14.634C15.0634 14.2034 15.6024 13.8966 16.1921 13.7445L21.0195 12.4993L16.1921 11.2555C15.6024 11.1034 15.0635 10.7966 14.6327 10.366C14.2557 9.9889 13.9724 9.52924 13.8057 9.02493L13.7418 8.80653L12.498 3.98045L11.2542 8.80653Z" fill="#009966"/><path d="M20.4532 6.8177V2.27261C20.4532 1.645 20.9615 1.13667 21.5891 1.13667C22.2167 1.13667 22.7251 1.645 22.7251 2.27261V6.8177C22.7251 7.44531 22.2167 7.95497 21.5891 7.95497C20.9615 7.95497 20.4532 7.44531 20.4532 6.8177Z" fill="#009966"/><path d="M23.8614 3.40943C24.489 3.40943 24.9987 3.91777 24.9987 4.54537C24.9987 5.17298 24.489 5.68131 23.8614 5.68131H19.3163C18.6887 5.68131 18.1804 5.17298 18.1804 4.54537C18.1804 3.91777 18.6887 3.40943 19.3163 3.40943H23.8614Z" fill="#009966"/><path d="M2.27103 20.4552V18.182C2.27103 17.5544 2.77937 17.046 3.40698 17.046C4.03458 17.046 4.54291 17.5544 4.54291 18.182V20.4552C4.54268 21.0826 4.03443 21.5911 3.40698 21.5911C2.77952 21.5911 2.27127 21.0826 2.27103 20.4552Z" fill="#009966"/><path d="M4.54291 18.182C5.17032 18.1822 5.67974 18.6909 5.67974 19.3184C5.67974 19.9458 5.17032 20.455 4.54291 20.4552H2.27103C1.64343 20.4552 1.13465 19.946 1.13465 19.3184C1.13465 18.6908 1.64343 18.182 2.27103 18.182H4.54291Z" fill="#009966"/><path d="M11.2542 8.80653C11.1018 9.39593 10.7938 9.93422 10.3633 10.3646C9.93252 10.7951 9.39356 11.1022 8.80387 11.2542L3.97779 12.4993L8.80387 13.7445C9.39333 13.8967 9.93274 14.2036 10.3633 14.634C10.7941 15.0648 11.102 15.6036 11.2542 16.1935L12.4967 21.0182L13.7418 16.1935C13.894 15.6036 14.2019 15.0648 14.6327 14.634C15.0634 14.2034 15.6024 13.8966 16.1921 13.7445L21.0195 12.4993L16.1921 11.2555C15.6024 11.1034 15.0635 10.7966 14.6327 10.366C14.2557 9.9889 13.9724 9.52924 13.8057 9.02493L13.7418 8.80653L12.498 3.98045L11.2542 8.80653Z" fill="#AFFC41"/></svg></div>
+                      <div class="lp-card-title">Get Your 3 Most Important Money Questions</div>
+                      <div class="lp-card-desc">Walk away with questions to help you think, plan, and prepare for what's next.</div>
+                    </div>
+                  </div>
+                  <button class="lp-cta">Discover Financial Joy</button>
+                  <div class="lp-est">🕐 Est time: 8 min</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- Privacy & Compliance Tab -->
+      <section id="tab-compliance" class="tab-panel">
+        <div class="main-header">
+          <h2>Privacy &amp; Compliance</h2>
+        </div>
+
+        <div class="field-group">
+          <label for="consent-language">Consent Opt-In Language</label>
+          <p class="field-hint" style="margin-bottom:4px;">To embed a link, use: <code>[link text](https://example.com)</code></p>
+          <textarea id="consent-language" rows="6" placeholder="By signing up, I agree to receive communications from ..."></textarea>
+        </div>
+
+
+      </section>
+
+    </main>
+    </div>
+  </div>
+
+  <!-- Save toast -->
+  <div class="save-toast" id="save-toast">
+    <div class="save-toast-icon">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3.5 9.5L7.5 13.5L14.5 5.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+    </div>
+    <span class="save-toast-text">Changes saved!</span>
+  </div>
+
+  <script>
+    let _uploadedLogoSrc = null;
+
+    // ── Google Fonts constants ──
+    const WEIGHT_NAMES = {
+      100: 'Thin', 200: 'Extra Light', 300: 'Light', 400: 'Regular',
+      500: 'Medium', 600: 'Semi Bold', 700: 'Bold', 800: 'Extra Bold', 900: 'Black'
+    };
+
+    // Fallback font list (used if the metadata API is unreachable)
+    const GF_POPULAR = [
+      'ABeeZee','Abril Fatface','Acme','Albert Sans','Alegreya','Alegreya Sans',
+      'Alfa Slab One','Alice','Amatic SC','Anonymous Pro','Anton','Arimo',
+      'Arvo','Asap','Assistant','Atkinson Hyperlegible','Audiowide','Baloo 2',
+      'Barlow','Barlow Condensed','Barlow Semi Condensed','Be Vietnam Pro',
+      'Bebas Neue','Bitter','Black Han Sans','Bree Serif','Cabin','Cairo',
+      'Cantarell','Cardo','Caveat','Chakra Petch','Chivo','Cinzel','Comfortaa',
+      'Commissioner','Concert One','Cormorant Garamond','Courier Prime',
+      'Crimson Pro','Crimson Text','DM Mono','DM Sans','DM Serif Display',
+      'Dancing Script','Darker Grotesque','Domine','Dosis','EB Garamond',
+      'Economica','Encode Sans','Epilogue','Exo 2','Fira Code','Fira Mono',
+      'Fira Sans','Fjalla One','Fraunces','Fredoka','Geologica','Gloria Hallelujah',
+      'Golos Text','Grandstander','Great Vibes','Heebo','IBM Plex Mono',
+      'IBM Plex Sans','IBM Plex Serif','Inconsolata','Indie Flower',
+      'Instrument Sans','Instrument Serif','Inter','Inter Tight','JetBrains Mono',
+      'Josefin Sans','Josefin Slab','Jost','Kanit','Karla','Kumbh Sans',
+      'Lato','League Spartan','Lexend','Libre Baskerville','Libre Franklin',
+      'Literata','Lobster','Lora','M PLUS 1','M PLUS Rounded 1c','Manrope',
+      'Marcellus','Merriweather','Merriweather Sans','Montserrat','Mulish',
+      'Noto Sans','Noto Serif','Nunito','Nunito Sans','Open Sans','Orbitron',
+      'Oswald','Outfit','Overpass','Pacifico','Playfair Display',
+      'Plus Jakarta Sans','Poppins','PT Mono','PT Sans','PT Serif','Public Sans',
+      'Quicksand','Raleway','Readex Pro','Recursive','Red Hat Display',
+      'Red Hat Text','Roboto','Roboto Condensed','Roboto Mono','Roboto Slab',
+      'Rowdies','Rubik','Sacramento','Saira','Sarabun','Schibsted Grotesk',
+      'Sen','Signika','Sofia Sans','Sora','Source Code Pro','Source Serif 4',
+      'Space Grotesk','Space Mono','Spectral','Titillium Web','Tomorrow',
+      'Ubuntu','Ubuntu Sans','Unbounded','Urbanist','Varela Round','Vollkorn',
+      'Work Sans','Yanone Kaffeesatz','Young Serif','Yrsa','Zilla Slab'
+    ];
+
+    // ── Font Family — load all Google Fonts into custom dropdown ──
+    const _fontFamilies = [];
+    const _fontTypeOptions = {};
+
+    function initFontFamilyList() {
+      fetch('https://fonts.google.com/metadata/fonts')
+        .then(r => r.text())
+        .then(txt => {
+          const json = txt.replace(/^\)\]\}'\n?/, '');
+          const data = JSON.parse(json);
+          const families = (data.familyMetadataList || []).map(f => f.family);
+          _fontFamilies.length = 0;
+          _fontFamilies.push(...families);
+        })
+        .catch(() => { _fontFamilies.length = 0; _fontFamilies.push(...GF_POPULAR); });
+    }
+
+    // ── Font Type — variants for chosen family ──
+    const _typeCache = {};
+    function updateFontTypeList(family) {
+      if (!family) return;
+      if (_typeCache[family]) { _fontTypeOptions[family] = _typeCache[family]; return; }
+      const allWeights = '0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;' +
+                         '1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900';
+      const url = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(family)}:ital,wght@${allWeights}&display=swap`;
+      fetch(url)
+        .then(r => r.text())
+        .then(css => {
+          const variants = [];
+          const seen = new Set();
+          const re = /@font-face\s*\{([^}]+)\}/g;
+          let m;
+          while ((m = re.exec(css)) !== null) {
+            const styleM  = /font-style:\s*(\w+)/.exec(m[1]);
+            const weightM = /font-weight:\s*(\d+)/.exec(m[1]);
+            if (!styleM || !weightM) continue;
+            const key = styleM[1] + '_' + weightM[1];
+            if (seen.has(key)) continue;
+            seen.add(key);
+            const wName = WEIGHT_NAMES[parseInt(weightM[1])] || ('Weight ' + weightM[1]);
+            const label = styleM[1] === 'italic'
+              ? (wName === 'Regular' ? 'Italic' : wName + ' Italic') : wName;
+            variants.push(label);
+          }
+          variants.sort((a, b) => {
+            const order = ['Thin','Extra Light','Light','Regular','Medium','Semi Bold','Bold','Extra Bold','Black'];
+            const ai = order.findIndex(o => a.startsWith(o));
+            const bi = order.findIndex(o => b.startsWith(o));
+            const aItalic = a.includes('Italic') ? 1 : 0;
+            const bItalic = b.includes('Italic') ? 1 : 0;
+            return (ai === bi ? aItalic - bItalic : (ai < 0 ? 1 : bi < 0 ? -1 : ai - bi));
+          });
+          _typeCache[family] = variants;
+          _fontTypeOptions[family] = variants;
+        })
+        .catch(() => {});
+    }
+
+    // ── Custom dropdown logic ──
+    function _renderDropdown(ddId, items) {
+      const dd = document.getElementById(ddId);
+      if (!items.length) {
+        dd.innerHTML = '<div class="custom-dropdown-empty">No matches</div>';
+      } else {
+        dd.innerHTML = items.slice(0, 120).map(v =>
+          `<div class="custom-dropdown-item" onmousedown="selectFontItem('${ddId}','${v.replace(/'/g, "\\'")}')">${v}</div>`
+        ).join('');
+      }
+    }
+
+    function openFontDropdown(inputId) {
+      const ddId = 'dd-' + inputId;
+      let items;
+      if (inputId === 'font-family') {
+        items = _fontFamilies.length ? _fontFamilies : GF_POPULAR;
+      } else {
+        const family = document.getElementById('font-family').value.trim();
+        items = _fontTypeOptions[family] || _typeCache[family] || [];
+      }
+      _renderDropdown(ddId, items);
+      document.getElementById(ddId).classList.add('open');
+    }
+
+    function filterFontDropdown(inputId) {
+      const q = document.getElementById(inputId).value.trim().toLowerCase();
+      let items;
+      if (inputId === 'font-family') {
+        const all = _fontFamilies.length ? _fontFamilies : GF_POPULAR;
+        items = q ? all.filter(f => f.toLowerCase().includes(q)) : all;
+      } else {
+        const family = document.getElementById('font-family').value.trim();
+        const all = _fontTypeOptions[family] || _typeCache[family] || [];
+        items = q ? all.filter(f => f.toLowerCase().includes(q)) : all;
+      }
+      _renderDropdown('dd-' + inputId, items);
+      document.getElementById('dd-' + inputId).classList.add('open');
+    }
+
+    function closeFontDropdown(inputId) {
+      setTimeout(() => document.getElementById('dd-' + inputId).classList.remove('open'), 160);
+    }
+
+    function selectFontItem(ddId, value) {
+      const inputId = ddId.replace('dd-', '');
+      document.getElementById(inputId).value = value;
+      document.getElementById(ddId).classList.remove('open');
+      updateFontPreview();
+      if (inputId === 'font-family') updateFontTypeList(value);
+    }
+
+    // ── Auto-save on any field interaction ──
+    document.addEventListener('change', e => {
+      // skip custom-key inputs (they have their own explicit Add flow)
+      if (e.target.id === 'custom-key' || e.target.id === 'custom-key-desc') return;
+      if (e.target.matches('input, select, textarea')) showSaveModal();
+    });
+    document.addEventListener('keydown', e => {
+      if (e.target.id === 'custom-key' || e.target.id === 'custom-key-desc') return;
+      if (e.key === 'Enter' && e.target.matches('input[type="text"], input[type="url"]')) showSaveModal();
+    });
+
+    // ── Save toast ──
+    let _toastTimer;
+    function showSaveModal() {
+      const t = document.getElementById('save-toast');
+      t.classList.add('visible');
+      clearTimeout(_toastTimer);
+      _toastTimer = setTimeout(() => t.classList.remove('visible'), 3000);
+    }
+    function hideSaveModal() {
+      document.getElementById('save-toast').classList.remove('visible');
+    }
+
+    // ── Font preview ──
+    const _loadedFonts = new Set();
+    function loadGoogleFont(family) {
+      if (!family || _loadedFonts.has(family)) return;
+      _loadedFonts.add(family);
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(family)}:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap`;
+      document.head.appendChild(link);
+    }
+    function typeToWeight(type) {
+      const t = type.toLowerCase();
+      if (t.includes('thin'))       return 100;
+      if (t.includes('extralight') || t.includes('extra light') || t.includes('ultra light')) return 200;
+      if (t.includes('light'))      return 300;
+      if (t.includes('medium'))     return 500;
+      if (t.includes('semibold') || t.includes('semi bold') || t.includes('demi')) return 600;
+      if (t.includes('extrabold') || t.includes('extra bold') || t.includes('ultrabold')) return 800;
+      if (t.includes('black') || t.includes('heavy')) return 900;
+      if (t.includes('bold'))       return 700;
+      return 400;
+    }
+    let _fontTimer;
+    function updateFontPreview() {
+      const family = document.getElementById('font-family').value.trim() || 'Poppins';
+      const type   = document.getElementById('font-type').value.trim()   || 'Regular';
+      clearTimeout(_fontTimer);
+      _fontTimer = setTimeout(() => {
+        loadGoogleFont(family);
+        updateFontTypeList(family);
+      }, 400);
+      const weight = typeToWeight(type);
+      const italic = /italic/i.test(type) ? 'italic' : 'normal';
+      [document.getElementById('font-family'), document.getElementById('font-type')].forEach(el => {
+        el.style.fontFamily  = `'${family}', 'Poppins', sans-serif`;
+        el.style.fontWeight  = weight;
+        el.style.fontStyle   = italic;
+      });
+      updatePreview();
+    }
+    // init on load
+    initFontFamilyList();
+    updateFontTypeList('Inter');
+    updateFontPreview();
+        setTimeout(() => { updatePreview(); onPreviewInput('header'); onPreviewInput('subtext'); _measureBothHeights(); fitPreview(); }, 0);    function addCustomKey() {
+      const keyEl  = document.getElementById('custom-key');
+      const descEl = document.getElementById('custom-key-desc');
+      const key  = keyEl.value.trim();
+      const desc = descEl.value.trim();
+      if (!key) { keyEl.focus(); return; }
+      const displayDesc = desc || key.replace(/_/g, ' ');
+      const item = document.createElement('label');
+      item.className = 'checkbox-item';
+      item.innerHTML =
+        `<input type="checkbox" checked />` +
+        `<span class="utm-label">` +
+          `<span class="utm-desc">${displayDesc}</span>` +
+          `<span class="utm-key">${key}</span>` +
+        `</span>`;
+      document.querySelector('.checkbox-grid').appendChild(item);
+      keyEl.value = '';
+      descEl.value = '';
+      keyEl.focus();
+    }
+
+    var _previewVersion = 'a';
+    // natural page height per version — scale is based on the taller one
+    // so the preview stays the same size when switching A/B
+    var _vHeights = { a: 0, b: 0 };
+
+    function fitPreview() {
+      const lp = document.getElementById('lp-preview');
+      const outer = document.querySelector('.preview-scale-outer');
+      if (!lp || !outer || !outer.clientWidth) return;
+      const natW = 800;
+      if (!lp.offsetHeight) return;
+      _vHeights[_previewVersion] = lp.offsetHeight;
+      const natH = Math.max(_vHeights.a, _vHeights.b, lp.offsetHeight);
+      // fill the container width; the container height follows the scaled page
+      const s = outer.clientWidth / natW;
+      lp.style.transform = 'scale(' + s + ')';
+      lp.style.left = '0px';
+      outer.style.height = Math.ceil(natH * s) + 'px';
+    }
+    window.addEventListener('resize', fitPreview);
+
+    function fitPreviewB() {
+      const lp = document.getElementById('lp-preview-b');
+      const outer = lp && lp.closest('.preview-scale-outer');
+      if (!lp || !outer || !outer.clientWidth) return;
+      const s = outer.clientWidth / 800;
+      lp.style.transform = 'scale(' + s + ')';
+      lp.style.left = '0px';
+      outer.style.height = Math.ceil(lp.offsetHeight * s) + 'px';
+    }
+    window.addEventListener('resize', fitPreviewB);
+
+    // measure both versions' page heights (swaps text invisibly within one frame)
+    function _measureBothHeights() {
+      const lp = document.getElementById('lp-preview');
+      const headerEl  = document.getElementById('preview-header');
+      const subtextEl = document.getElementById('preview-subtext');
+      if (!lp || !headerEl || !subtextEl || !lp.offsetHeight) return;
+      const saveH = headerEl.textContent, saveS = subtextEl.textContent;
+      ['a', 'b'].forEach(v => {
+        headerEl.textContent  = document.getElementById(v === 'a' ? 'va-header'  : 'vb-header').value;
+        subtextEl.textContent = document.getElementById(v === 'a' ? 'va-subtext' : 'vb-subtext').value;
+        _vHeights[v] = lp.offsetHeight;
+      });
+      headerEl.textContent = saveH;
+      subtextEl.textContent = saveS;
+    }
+
+    // measured so header stays on 1 line and subtext on 2 lines (Poppins, 800px page)
+    var FIELD_MAX = { header: 40, subtext: 120 };
+
+    function _setBadge(el) {
+      const badge = document.getElementById('preview-char-badge');
+      const lp = document.getElementById('lp-preview');
+      if (!el || !badge || !lp) return;
+      const field = el.id === 'preview-header' ? 'header' : 'subtext';
+      const max = FIELD_MAX[field];
+      const len = el.textContent.length;
+      badge.textContent = len + '/' + max;
+      badge.classList.toggle('warn', len >= max * 0.85 && len < max);
+      badge.classList.toggle('over', len >= max);
+      // position in unscaled page coords: below the field, right-aligned
+      let top = el.offsetTop, left = el.offsetLeft, n = el.offsetParent;
+      while (n && n !== lp) { top += n.offsetTop; left += n.offsetLeft; n = n.offsetParent; }
+      badge.style.top = (top + el.offsetHeight + 8) + 'px';
+      badge.style.left = 'auto';
+      badge.style.right = (800 - (left + el.offsetWidth)) + 'px';
+    }
+
+    function onPreviewInput(field) {
+      const el = document.getElementById('preview-' + field);
+      if (!el) return;
+      // hard limit: contenteditable has no maxlength, enforce here
+      const max = FIELD_MAX[field];
+      if (el.textContent.length > max) {
+        el.textContent = el.textContent.slice(0, max);
+        // put the caret back at the end after truncation
+        const range = document.createRange();
+        range.selectNodeContents(el);
+        range.collapse(false);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+      }
+      // sync to hidden backing input
+      const input = document.getElementById((_previewVersion === 'a' ? 'va-' : 'vb-') + field);
+      if (input) input.value = el.textContent;
+      fitPreview(); // text wrapping can change the page height
+      // keep badge count and position in sync while typing
+      const badge = document.getElementById('preview-char-badge');
+      if (badge && badge.classList.contains('visible')) _setBadge(el);
+    }
+
+    function onPreviewFocus(field) {
+      const el = document.getElementById('preview-' + field);
+      const badge = document.getElementById('preview-char-badge');
+      if (!el || !badge) return;
+      _setBadge(el);
+      badge.classList.add('visible');
+    }
+
+    function onPreviewBlur() {
+      const badge = document.getElementById('preview-char-badge');
+      if (badge) badge.classList.remove('visible');
+    }
+
+    function setVersion(v) {
+      // save current editable content to hidden inputs
+      const cur = _previewVersion;
+      const headerEl  = document.getElementById('preview-header');
+      const subtextEl = document.getElementById('preview-subtext');
+      if (headerEl)  document.getElementById(cur === 'a' ? 'va-header'  : 'vb-header').value  = headerEl.textContent;
+      if (subtextEl) document.getElementById(cur === 'a' ? 'va-subtext' : 'vb-subtext').value = subtextEl.textContent;
+
+      _previewVersion = v;
+      document.getElementById('vetab-a').classList.toggle('active', v === 'a');
+      document.getElementById('vetab-b').classList.toggle('active', v === 'b');
+
+      // load new version's text into the editable preview elements
+      if (headerEl)  headerEl.textContent  = document.getElementById(v === 'a' ? 'va-header'  : 'vb-header').value;
+      if (subtextEl) subtextEl.textContent = document.getElementById(v === 'a' ? 'va-subtext' : 'vb-subtext').value;
+
+      // refresh char counts
+      onPreviewInput('header');
+      onPreviewInput('subtext');
+    }
+    function setPreviewVersion(v) { setVersion(v); }
+
+    function updatePreview() {
+      const primary = '#' + (document.getElementById('hex-primary').value || '240446');
+      const accent  = '#' + (document.getElementById('hex-accent').value  || '7639A1');
+      const fontFamily = document.getElementById('font-family')?.value.trim() || 'Poppins';
+      const fontType   = document.getElementById('font-type')?.value.trim() || 'Regular';
+      const orgName = (document.getElementById('brand-name') || document.getElementById('org-name'))?.value.trim() || 'Acme';
+      const hideTm = document.getElementById('hide-trademark')?.checked;
+
+      ['lp-preview', 'lp-preview-b'].forEach(id => {
+        const lp = document.getElementById(id);
+        if (!lp) return;
+        lp.style.setProperty('--lp-primary', primary);
+        lp.style.setProperty('--lp-accent',  accent);
+      });
+
+      // sync branding preview text from Version A
+      const hb = document.getElementById('preview-header-b');
+      const sb = document.getElementById('preview-subtext-b');
+      const vaH = document.getElementById('va-header');
+      const vaS = document.getElementById('va-subtext');
+      if (hb && vaH) hb.textContent = vaH.value;
+      if (sb && vaS) sb.textContent = vaS.value;
+      fitPreviewB();
+
+      if (_uploadedLogoSrc) {
+        applyOrgNameLogo();
+      } else {
+        ['preview-org-name', 'preview-org-name-b'].forEach(id => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          el.textContent = orgName.toUpperCase();
+          if (!hideTm) {
+            const reg = document.createElement('span');
+            reg.className = 'org-reg';
+            reg.textContent = '®';
+            el.appendChild(reg);
+          }
+          el.style.fontFamily = `'${fontFamily}', 'Poppins', sans-serif`;
+          el.style.fontWeight = typeToWeight(fontType);
+          el.style.fontStyle  = /italic/i.test(fontType) ? 'italic' : 'normal';
+        });
+      }
+    }
+
+    function syncBrandName(val) {
+      const orgInput = document.getElementById('org-name');
+      if (orgInput) { orgInput.value = val; updateSlug(val); }
+      updatePreview();
+    }
+
+    function handleLogoUpload(input) {
+      if (!input.files || !input.files[0]) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        _uploadedLogoSrc = e.target.result;
+
+        // Update upload area thumbnail
+        const img = document.getElementById('logo-preview-img');
+        const ph  = document.getElementById('logo-placeholder');
+        img.src = _uploadedLogoSrc;
+        img.style.display = 'block';
+        ph.style.display  = 'none';
+
+        applyOrgNameLogo();
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+
+    function applyOrgNameLogo() {
+      if (!_uploadedLogoSrc) return;
+      const hideTm = document.getElementById('hide-trademark')?.checked;
+      const regHtml = hideTm ? '' : '<span class="org-reg">®</span>';
+      ['preview-org-name', 'preview-org-name-b'].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.innerHTML = `<img src="${_uploadedLogoSrc}" style="height:16px; max-width:110px; object-fit:contain; display:inline-block; vertical-align:middle;">${regHtml}`;
+      });
+    }
+
+    function addTemplate() {
+      const tabs = document.querySelector('.version-editor-tabs');
+      const existing = tabs.querySelectorAll('.version-editor-tab:not(#vetab-add)').length;
+      const letter = String.fromCharCode(65 + existing); // C, D, …
+      const btn = document.createElement('button');
+      btn.className = 'version-editor-tab';
+      btn.textContent = 'Version ' + letter;
+      btn.onclick = () => {
+        tabs.querySelectorAll('.version-editor-tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      };
+      tabs.insertBefore(btn, document.getElementById('vetab-add'));
+      btn.click();
+    }
+
+    function updateSlug(name) {
+      updatePreview();
+      document.getElementById('org-slug').value = name
+        .toLowerCase()
+        .trim()
+        .replace(/\s+/g, '-')
+        .replace(/[^a-z0-9-]/g, '');
+    }
+
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-' + tab).classList.add('active');
+      document.querySelector('[data-tab="' + tab + '"]').classList.add('active');
+      if (tab === 'customization') fitPreview();
+      if (tab === 'branding') {
+        // sync name from General into Branding
+        const orgName = document.getElementById('org-name')?.value || '';
+        const brandInput = document.getElementById('brand-name');
+        if (brandInput && !brandInput._userEdited) brandInput.value = orgName;
+        updatePreview();
+        setTimeout(() => { fitPreview(); fitPreviewB(); }, 0);
+      }
+    }
+
+    function updateColor(key, hex) {
+      // hex comes from color picker as "#RRGGBB"
+      document.getElementById('swatch-' + key).style.background = hex;
+      document.getElementById('hex-' + key).value = hex.slice(1).toUpperCase();
+      updatePreview();
+    }
+
+    function updateCharCount(fieldId, countId) {
+      const field = document.getElementById(fieldId);
+      const countEl = document.getElementById(countId);
+      if (!field || !countEl) return;
+      const max = parseInt(field.getAttribute('maxlength') || '100', 10);
+      const remaining = max - field.value.length;
+      countEl.textContent = remaining + ' remaining';
+      countEl.classList.toggle('warn', remaining <= 20 && remaining > 0);
+      countEl.classList.toggle('over', remaining < 0);
+    }
+
+    function updateColorFromHex(key, value) {
+      // value is 6 hex chars (no leading #)
+      if (/^[0-9A-Fa-f]{6}$/.test(value)) {
+        const hex = '#' + value;
+        document.getElementById('swatch-' + key).style.background = hex;
+        document.querySelector('#swatch-' + key + ' input[type=color]').value = hex;
+        updatePreview();
+      }
+    }
+  </script>
+
+
+</body></html>
