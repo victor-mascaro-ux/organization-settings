@@ -853,6 +853,9 @@
     .logo-placeholder svg { flex-shrink: 0; }
     #logo-preview-img { max-height: 48px; max-width: 180px; object-fit: contain; }
 
+    /* ── Mobile nav select (desktop: hidden) ── */
+    .mobile-nav-wrap { display: none; }
+
     /* ── Mobile ── */
     @media (max-width: 768px) {
       .shell {
@@ -866,39 +869,39 @@
         min-height: calc(100vh - 60px);
       }
 
-      /* Sidebar → horizontal scrollable tab strip */
-      .sidebar {
-        width: 100%;
-        flex-direction: row;
-        padding: 0 12px;
-        gap: 0;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
+      /* Sidebar → hidden; replaced by select dropdown */
+      .sidebar { display: none; }
+
+      /* Mobile nav select */
+      .mobile-nav-wrap {
+        display: block;
+        position: sticky;
+        top: 60px;
+        z-index: 90;
+        background: white;
         border-bottom: 1px solid var(--border);
+        padding: 10px 16px;
       }
-      .sidebar::-webkit-scrollbar { display: none; }
-      .sidebar-heading { display: none; }
-      .sidebar-nav {
-        flex-direction: row;
-        gap: 0;
-        width: max-content;
-      }
-      .nav-item {
-        flex-shrink: 0;
-        white-space: nowrap;
-        border-radius: 0;
-        padding: 12px 14px;
-        font-size: 13px;
-        border-bottom: 2px solid transparent;
-        margin-bottom: -1px;
-      }
-      .nav-item.active {
-        background: transparent;
-        border-bottom-color: var(--primary-100);
+      .mobile-nav-select {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 14px;
+        font-weight: 600;
         color: var(--primary-100);
+        background: white;
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 6L8 10L12 6' stroke='%23757575' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        padding-right: 36px;
+        cursor: pointer;
+        outline: none;
       }
-      .nav-icon { display: none; }
+      .mobile-nav-select:focus { border-color: var(--primary-70); }
 
       /* Main content */
       .main { padding: 20px 16px; }
@@ -967,6 +970,18 @@
       </svg>
     </div>
   </nav>
+
+  <!-- Mobile nav select (hidden on desktop) -->
+  <div class="mobile-nav-wrap">
+    <select class="mobile-nav-select" onchange="switchTab(this.value); document.querySelectorAll('.nav-item').forEach(b => b.classList.toggle('active', b.dataset.tab === this.value))">
+      <option value="access">Advisory Team Access</option>
+      <option value="general">General</option>
+      <option value="branding">Branding</option>
+      <option value="customization">Site Customization</option>
+      <option value="prospects">Marketing</option>
+      <option value="compliance">Privacy &amp; Compliance</option>
+    </select>
+  </div>
 
   <div class="shell">
     <div class="card">
