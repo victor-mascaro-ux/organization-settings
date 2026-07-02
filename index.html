@@ -855,6 +855,7 @@
 
     /* ── Mobile nav select (desktop: hidden) ── */
     .mobile-nav-wrap { display: none; }
+    .mobile-version-wrap { display: none; }
 
     /* ── Mobile ── */
     @media (max-width: 768px) {
@@ -926,36 +927,29 @@
       .custom-key-group { flex-direction: column; }
       .btn-add { width: 100%; justify-content: center; padding: 10px 14px; }
 
-      /* Version tabs → segmented pill control */
-      .ver-preview-link { display: none; }
-      .version-editor-tabs {
-        background: #f0edf7;
-        border-radius: 10px;
-        border-bottom: none;
-        padding: 4px;
-        gap: 2px;
-        flex-wrap: wrap;
+      /* Version tabs → hidden on mobile, replaced by select row */
+      .version-editor-tabs { display: none; }
+      .mobile-version-wrap {
+        display: flex;
+        gap: 8px;
+        align-items: center;
       }
-      .version-editor-tab {
-        flex: 1;
-        justify-content: center;
-        border-bottom: none;
-        margin-bottom: 0;
-        border-radius: 7px;
-        padding: 8px 10px;
-        font-size: 13px;
-        min-width: 0;
-      }
-      .version-editor-tab.active {
+      .mobile-version-wrap .mobile-nav-select { flex: 1; }
+      .mobile-add-template-btn {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-shrink: 0;
+        padding: 10px 14px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
         background: white;
-        border-bottom-color: transparent;
-        box-shadow: 0 1px 4px rgba(0,0,0,0.12);
-      }
-      #vetab-add {
-        flex: 0 0 auto;
-        margin-left: 0;
+        font-family: 'Poppins', sans-serif;
+        font-size: 13px;
+        font-weight: 600;
         color: var(--primary-70);
-        padding: 8px 12px;
+        cursor: pointer;
+        white-space: nowrap;
       }
 
       /* Hide the live preview on mobile — not usable at 800px scaled */
@@ -1119,7 +1113,7 @@
 
         <div class="customization-stack">
 
-          <!-- Version A/B tabs -->
+          <!-- Version A/B tabs (desktop) -->
           <div class="version-editor-tabs">
             <button class="version-editor-tab active" id="vetab-a" onclick="setVersion('a')">
               Version A
@@ -1133,6 +1127,18 @@
             <button class="version-editor-tab" id="vetab-add" onclick="addTemplate()" style="margin-left:auto; color: var(--primary-70);">
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex-shrink:0"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
               Add Template
+            </button>
+          </div>
+
+          <!-- Version select + add button (mobile) -->
+          <div class="mobile-version-wrap">
+            <select class="mobile-nav-select" id="mobile-version-select" onchange="setVersion(this.value); document.querySelectorAll('.version-editor-tab').forEach(b => b.classList.toggle('active', b.id === 'vetab-' + this.value))">
+              <option value="a">Version A (Default)</option>
+              <option value="b">Version B</option>
+            </select>
+            <button class="mobile-add-template-btn" onclick="addTemplate()">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              Add
             </button>
           </div>
 
@@ -1793,6 +1799,15 @@
         btn.classList.add('active');
       };
       tabs.insertBefore(btn, document.getElementById('vetab-add'));
+      // sync mobile select
+      const mSel = document.getElementById('mobile-version-select');
+      if (mSel) {
+        const opt = document.createElement('option');
+        opt.value = v;
+        opt.textContent = 'Version ' + letter;
+        mSel.appendChild(opt);
+        mSel.value = v;
+      }
       btn.click();
     }
 
