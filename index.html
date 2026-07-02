@@ -852,6 +852,89 @@
     .logo-placeholder { display: flex; align-items: center; gap: 8px; color: var(--neutral-90); font-size: 13px; font-weight: 500; }
     .logo-placeholder svg { flex-shrink: 0; }
     #logo-preview-img { max-height: 48px; max-width: 180px; object-fit: contain; }
+
+    /* ── Mobile ── */
+    @media (max-width: 768px) {
+      .shell {
+        padding: 68px 0 0 0;
+        align-items: stretch;
+      }
+      .card {
+        flex-direction: column;
+        border-radius: 0;
+        box-shadow: none;
+        min-height: calc(100vh - 60px);
+      }
+
+      /* Sidebar → horizontal scrollable tab strip */
+      .sidebar {
+        width: 100%;
+        flex-direction: row;
+        padding: 0 12px;
+        gap: 0;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .sidebar::-webkit-scrollbar { display: none; }
+      .sidebar-heading { display: none; }
+      .sidebar-nav {
+        flex-direction: row;
+        gap: 0;
+        width: max-content;
+      }
+      .nav-item {
+        flex-shrink: 0;
+        white-space: nowrap;
+        border-radius: 0;
+        padding: 12px 14px;
+        font-size: 13px;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -1px;
+      }
+      .nav-item.active {
+        background: transparent;
+        border-bottom-color: var(--primary-100);
+        color: var(--primary-100);
+      }
+      .nav-icon { display: none; }
+
+      /* Main content */
+      .main { padding: 20px 16px; }
+      .main-header h2 { font-size: 20px; }
+      .btn-save { align-self: stretch; }
+
+      /* Grids → single column */
+      .checkbox-grid { grid-template-columns: 1fr; }
+      .advisors-box { grid-template-columns: 1fr; }
+      .version-fields { grid-template-columns: 1fr; }
+
+      /* Side-by-side rows → stack */
+      .color-row { flex-direction: column; gap: 16px; }
+      .font-row  { flex-direction: column; gap: 16px; }
+
+      /* Fixed-width inputs → full width */
+      .color-input-wrap { width: 100%; }
+      .font-field input  { width: 100%; }
+      .custom-dropdown   { width: 100%; }
+
+      /* Custom key action button */
+      .custom-key-group { flex-direction: column; }
+      .btn-add { width: 100%; justify-content: center; padding: 10px 14px; }
+
+      /* Version tabs: scroll horizontally */
+      .version-editor-tabs {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+      .version-editor-tabs::-webkit-scrollbar { display: none; }
+      .version-editor-tab { flex-shrink: 0; padding: 10px 12px; font-size: 13px; }
+
+      /* Hide the live preview on mobile — not usable at 800px scaled */
+      .preview-wrapper { display: none; }
+    }
   </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&amp;display=swap"></head>
 <body>
