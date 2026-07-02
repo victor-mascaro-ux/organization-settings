@@ -552,16 +552,19 @@
     }
     .ver-preview-link {
       font-size: 11px;
-      font-weight: 500;
+      font-weight: 600;
       color: var(--primary-70);
-      opacity: 0.6;
+      background: var(--primary-10);
+      border: 1px solid var(--primary-20, #ddd6f3);
+      border-radius: 20px;
+      padding: 2px 8px;
       cursor: pointer;
       text-decoration: none;
-      margin-left: 2px;
-      transition: opacity 0.15s;
+      margin-left: 6px;
+      white-space: nowrap;
+      transition: background 0.15s, color 0.15s;
     }
-    .version-editor-tab:hover .ver-preview-link,
-    .version-editor-tab.active .ver-preview-link { opacity: 1; }
+    .ver-preview-link:hover { background: var(--primary-20, #ddd6f3); color: var(--primary-100); }
     .version-fields {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -1000,11 +1003,11 @@
             <button class="version-editor-tab active" id="vetab-a" onclick="setVersion('a')">
               Version A
               <span class="version-default-tag">Default</span>
-              <span class="ver-preview-link" onclick="event.stopPropagation(); window.open('https://acmeadvisors.knomee.com?v=a','_blank')" title="Preview site">↗</span>
+              <span class="ver-preview-link" onclick="event.stopPropagation(); window.open('https://acmeadvisors.knomee.com?v=a','_blank')" title="Preview site">Preview ↗</span>
             </button>
             <button class="version-editor-tab" id="vetab-b" onclick="setVersion('b')">
               Version B
-              <span class="ver-preview-link" onclick="event.stopPropagation(); window.open('https://acmeadvisors.knomee.com?v=b','_blank')" title="Preview site">↗</span>
+              <span class="ver-preview-link" onclick="event.stopPropagation(); window.open('https://acmeadvisors.knomee.com?v=b','_blank')" title="Preview site">Preview ↗</span>
             </button>
             <button class="version-editor-tab" id="vetab-add" onclick="addTemplate()" style="margin-left:auto; color: var(--primary-70);">
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex-shrink:0"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
@@ -1026,14 +1029,14 @@
           <div class="field-group">
             <label for="vc-header">Heading</label>
             <input type="text" id="vc-header" maxlength="40" value="Wealth is about experiencing life fully." placeholder="Main heading on the welcome page" oninput="updateCharCount('vc-header','vc-header-count')">
-            <span class="char-count" id="vc-header-count">1 remaining</span>
+            <span class="char-count" id="vc-header-count">39/40</span>
           </div>
 
           <!-- Subtext field -->
           <div class="field-group">
             <label for="vc-subtext">Subtext</label>
             <input type="text" id="vc-subtext" maxlength="120" value="Take a few minutes to get clear on what matters most and what your money is really for." placeholder="Supporting text below the heading" oninput="updateCharCount('vc-subtext','vc-subtext-count')">
-            <span class="char-count" id="vc-subtext-count">2 remaining</span>
+            <span class="char-count" id="vc-subtext-count">87/120</span>
           </div>
 
           <button class="btn-save" onclick="showSaveModal()">Save Changes</button>
@@ -1659,7 +1662,7 @@
       const btn = document.createElement('button');
       btn.className = 'version-editor-tab';
       btn.innerHTML = 'Version ' + letter +
-        ' <span class="ver-preview-link" title="Preview site">↗</span>';
+        ' <span class="ver-preview-link" title="Preview site">Preview ↗</span>';
       btn.querySelector('.ver-preview-link').addEventListener('click', e => {
         e.stopPropagation();
         window.open('https://acmeadvisors.knomee.com?v=' + v, '_blank');
@@ -1706,7 +1709,7 @@
       if (!field || !countEl) return;
       const max = parseInt(field.getAttribute('maxlength') || '100', 10);
       const remaining = max - field.value.length;
-      countEl.textContent = remaining + ' remaining';
+      countEl.textContent = field.value.length + '/' + max;
       countEl.classList.toggle('warn', remaining <= 20 && remaining > 0);
       countEl.classList.toggle('over', remaining < 0);
     }
