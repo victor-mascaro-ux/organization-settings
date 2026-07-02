@@ -856,6 +856,7 @@
     /* ── Mobile nav select (desktop: hidden) ── */
     .mobile-nav-wrap { display: none; }
     .mobile-version-wrap { display: none; }
+    .mobile-preview-link { display: none; }
 
     /* ── Mobile ── */
     @media (max-width: 768px) {
@@ -951,6 +952,21 @@
         cursor: pointer;
         white-space: nowrap;
       }
+      .mobile-preview-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--primary-70);
+        text-decoration: none;
+        padding: 8px 14px;
+        background: var(--primary-10);
+        border: 1px solid var(--primary-20, #ddd6f3);
+        border-radius: 8px;
+        align-self: flex-start;
+      }
+      .mobile-preview-link:hover { background: var(--primary-20, #ddd6f3); }
 
       /* Hide the live preview on mobile — not usable at 800px scaled */
       .preview-wrapper { display: none; }
@@ -1132,7 +1148,7 @@
 
           <!-- Version select + add button (mobile) -->
           <div class="mobile-version-wrap">
-            <select class="mobile-nav-select" id="mobile-version-select" onchange="setVersion(this.value); document.querySelectorAll('.version-editor-tab').forEach(b => b.classList.toggle('active', b.id === 'vetab-' + this.value))">
+            <select class="mobile-nav-select" id="mobile-version-select" onchange="setVersion(this.value); document.querySelectorAll('.version-editor-tab').forEach(b => b.classList.toggle('active', b.id === 'vetab-' + this.value)); updateMobilePreviewLink(this.value)">
               <option value="a">Version A (Default)</option>
               <option value="b">Version B</option>
             </select>
@@ -1141,6 +1157,9 @@
               Add
             </button>
           </div>
+          <a class="mobile-preview-link" id="mobile-preview-link" href="https://acmeadvisors.knomee.com?v=a" target="_blank">
+            Preview site ↗
+          </a>
 
           <!-- Welcome page toggle -->
           <div>
@@ -1837,6 +1856,11 @@
       document.getElementById('swatch-' + key).style.background = hex;
       document.getElementById('hex-' + key).value = hex.slice(1).toUpperCase();
       updatePreview();
+    }
+
+    function updateMobilePreviewLink(v) {
+      const link = document.getElementById('mobile-preview-link');
+      if (link) link.href = 'https://acmeadvisors.knomee.com?v=' + v;
     }
 
     function updateCharCount(fieldId, countId) {
