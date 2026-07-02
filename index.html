@@ -926,14 +926,37 @@
       .custom-key-group { flex-direction: column; }
       .btn-add { width: 100%; justify-content: center; padding: 10px 14px; }
 
-      /* Version tabs: scroll horizontally */
+      /* Version tabs → segmented pill control */
+      .ver-preview-link { display: none; }
       .version-editor-tabs {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
+        background: #f0edf7;
+        border-radius: 10px;
+        border-bottom: none;
+        padding: 4px;
+        gap: 2px;
+        flex-wrap: wrap;
       }
-      .version-editor-tabs::-webkit-scrollbar { display: none; }
-      .version-editor-tab { flex-shrink: 0; padding: 10px 12px; font-size: 13px; }
+      .version-editor-tab {
+        flex: 1;
+        justify-content: center;
+        border-bottom: none;
+        margin-bottom: 0;
+        border-radius: 7px;
+        padding: 8px 10px;
+        font-size: 13px;
+        min-width: 0;
+      }
+      .version-editor-tab.active {
+        background: white;
+        border-bottom-color: transparent;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+      }
+      #vetab-add {
+        flex: 0 0 auto;
+        margin-left: 0;
+        color: var(--primary-70);
+        padding: 8px 12px;
+      }
 
       /* Hide the live preview on mobile — not usable at 800px scaled */
       .preview-wrapper { display: none; }
